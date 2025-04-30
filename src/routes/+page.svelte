@@ -1,0 +1,580 @@
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { type ColorStop } from '$lib/types';
+  
+  // Import components
+  import WIPBanner from '$lib/components/WIPBanner.svelte';
+  import GradientPreview from '$lib/components/GradientPreview.svelte';
+  import ColorStopBar from '$lib/components/ColorStopBar.svelte';
+  import ColorPicker from '$lib/components/ColorPicker.svelte';
+  import GradientTypeSelector from '$lib/components/GradientTypeSelector.svelte';
+  import AngleControl from '$lib/components/AngleControl.svelte';
+  import CenterControl from '$lib/components/CenterControl.svelte';
+  import ExportSettings from '$lib/components/ExportSettings.svelte';
+  import AdvertisementPlaceholder from '$lib/components/AdvertisementPlaceholder.svelte';
+  
+  // Gradient properties
+  let gradientType = $state<'linear' | 'radial'>('linear');
+  let angle = $state(90);
+  let centerX = $state(50);
+  let centerY = $state(50);
+  let isSnappingEnabled = $state(false);
+  
+  // Export settings
+  let exportWidth = $state(512);
+  let exportHeight = $state(512);
+  let exportFormat = $state('png');
+  
+  // Removed duplicate snapToGrid state
+  
+  // Function to generate a unique ID
+  function generateId(): string {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+  
+  // Gradient state - using a Map instead of an array to avoid index-based selection issues
+  // This is a fundamental change that ensures selection is always by ID
+  let colorStopsMap = $state<Record<string, ColorStop>>({});
+  
+  // Create a derived array from the map for components that need an array
+  let colorStops = $derived(Object.values(colorStopsMap).sort((a, b) => a.position - b.position));
+  
+  // Initialize with two default stops
+  $effect(() => {
+    if (Object.keys(colorStopsMap).length === 0) {
+      const stop1 = { id: generateId(), color: '#FF5F6D', position: 0, alpha: 1 };
+      const stop2 = { id: generateId(), color: '#FFC371', position: 100, alpha: 1 };
+      colorStopsMap = {
+        [stop1.id]: stop1,
+        [stop2.id]: stop2
+      };
+      
+      // Select the first stop by default
+      selectedStopId = stop1.id;
+    }
+  });
+  
+  // Track the currently selected color stop by its ID
+  let selectedStopId = $state<string | null>(null);
+  
+  // Create a stable default color stop object that won't be recreated on each render
+  const defaultColorStop: ColorStop = $state({
+    id: 'default',
+    color: '#cccccc',
+    position: 50,
+    alpha: 1
+  });
+  
+  // Get the currently selected stop object directly from the map by ID
+  // This is more efficient and avoids any array-based lookups
+  let selectedStop = $state<ColorStop | null>(null);
+  $effect(() => {
+    if (selectedStopId && selectedStopId in colorStopsMap) {
+      selectedStop = colorStopsMap[selectedStopId];
+    } else {
+      selectedStop = null;
+    }
+  });
+  
+  // Stable reference to the color stop that will be passed to the ColorPicker
+  // This ensures we don't create a new object on every render
+  let colorPickerStop = $derived(selectedStop || defaultColorStop);
+  
+  // Track whether we're currently dragging and which stop is being dragged
+  let isDraggingColorStop = $state(false);
+  let draggedStopId = $state<string | null>(null);
+  
+  // Initialize the selected stop ID after colorStops are defined
+  $effect(() => {
+    const stopIds = Object.keys(colorStopsMap);
+    if (stopIds.length > 0) {
+      // If no stop is selected or the selected stop was removed
+      if (selectedStopId === null || !colorStopsMap[selectedStopId]) {
+        // Select the first stop by ID, not by index
+        const firstId = stopIds[0]; // This is unavoidable - we need the first ID
+        selectedStopId = firstId;
+      }
+    }
+  });
+  
+  // Component references
+  let colorStopBarComponent: any;
+  const previewSize = 512;
+  
+  // Color stop functions
+  function addColorStop(e: MouseEvent) {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    let percentage = (x / rect.width) * 100;
+    
+    // Clamp the percentage between 0 and 100
+    percentage = Math.max(0, Math.min(100, percentage));
+    
+    // Find color at this position by interpolating between existing stops
+    const sortedStops = Object.values(colorStopsMap).sort((a, b) => a.position - b.position);
+    let prevStop = sortedStops[0];
+    let nextStop = sortedStops[sortedStops.length - 1];
+    
+    for (let i = 0; i < sortedStops.length - 1; i++) {
+      if (percentage >= sortedStops[i].position && percentage <= sortedStops[i + 1].position) {
+        prevStop = sortedStops[i];
+        nextStop = sortedStops[i + 1];
+        break;
+      }
+    }
+    
+    // Interpolate color
+    const ratio = (percentage - prevStop.position) / (nextStop.position - prevStop.position);
+    const color = interpolateColor(prevStop.color, nextStop.color, ratio);
+    const alpha = prevStop.alpha + (nextStop.alpha - prevStop.alpha) * ratio;
+    
+    // Create a new color stop with interpolated color
+    const newStop = {
+      id: generateId(),
+      color,
+      position: percentage,
+      alpha
+    };
+    
+    // Add the new stop to the map
+    colorStopsMap = {
+      ...colorStopsMap,
+      [newStop.id]: newStop
+    };
+    
+    // Select the new stop
+    selectedStopId = newStop.id;
+  }
+  
+  // Track the last clicked stop to prevent double deletion
+  let lastClickedStopId = $state<string | null>(null);
+  let lastClickTime = $state(0);
+  
+  function selectColorStop(stopId: string, e?: MouseEvent) {
+    // If the event doesn't exist, this was triggered programmatically
+    if (!e) {
+      selectedStopId = stopId;
+      return;
+    }
+    
+    const now = Date.now();
+    
+    // If it's a double-click (within 300ms), remove the stop
+    if (lastClickedStopId === stopId && (now - lastClickTime) < 300 && Object.keys(colorStopsMap).length > 2) {
+      removeColorStop(stopId);
+      // Reset tracking variables to prevent multiple deletions
+      lastClickedStopId = null;
+      lastClickTime = 0;
+      return;
+    }
+    
+    // Update tracking variables for future double-click detection
+    lastClickedStopId = stopId;
+    lastClickTime = now;
+    
+    // Set the selected stop ID
+    selectedStopId = stopId;
+  }
+  
+  // Helper function to find a stop by its properties
+  function findStopByProperties(color: string, alpha: number, position: number): string | undefined {
+    return Object.keys(colorStopsMap).find(stopId => 
+      colorStopsMap[stopId].color === color && 
+      Math.abs(colorStopsMap[stopId].alpha - alpha) < 0.001 &&
+      Math.abs(colorStopsMap[stopId].position - position) < 0.1
+    );
+  }
+  
+  function removeColorStop(stopId: string) {
+    // Ensure we have at least 2 stops
+    if (Object.keys(colorStopsMap).length <= 2) return; 
+    
+    // Get the sorted stops to find the one to the right (we'll select this one)
+    const sortedStops = Object.values(colorStopsMap).sort((a, b) => a.position - b.position);
+    const stopIndex = sortedStops.findIndex(stop => stop.id === stopId);
+    
+    // Find the stop to the right (or the left one if this is the last stop)
+    // This gives us a more natural selection flow
+    const rightStopIndex = stopIndex < sortedStops.length - 1 ? stopIndex + 1 : stopIndex - 1;
+    const nextSelectedId = sortedStops[rightStopIndex]?.id;
+    
+    // If we're removing the currently selected stop, update selection BEFORE removing it
+    // This prevents any flickering
+    if (selectedStopId === stopId && nextSelectedId) {
+      selectedStopId = nextSelectedId;
+    }
+    
+    // Now remove the stop from the map
+    const newMap = { ...colorStopsMap };
+    delete newMap[stopId];
+    colorStopsMap = newMap;
+  }
+  
+  function updateSelectedStopProperties(color?: string, position?: number, alpha?: number) {
+    if (!selectedStopId || !colorStopsMap[selectedStopId]) return;
+    
+    // Update the stop directly in the map
+    if (colorStopsMap[selectedStopId]) {
+      colorStopsMap = {
+        ...colorStopsMap,
+        [selectedStopId]: {
+          ...colorStopsMap[selectedStopId],
+          ...(color !== undefined ? { color } : {}),
+          ...(position !== undefined ? { position } : {}),
+          ...(alpha !== undefined ? { alpha } : {})
+        }
+      };
+    }
+  }
+  
+  function handleColorStopDragStart(e: MouseEvent | TouchEvent, stopId: string) {
+    // Set drag state
+    isDraggingColorStop = true;
+    draggedStopId = stopId;
+    
+    // Select the stop being dragged
+    selectedStopId = stopId;
+    
+    // Add event listeners for drag movement and end
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('touchmove', handleDragMove, { passive: false });
+    document.addEventListener('mouseup', handleDragEnd);
+    document.addEventListener('touchend', handleDragEnd);
+    document.addEventListener('touchcancel', handleDragEnd);
+    
+    e.preventDefault();
+  }
+  
+  function handleDragMove(e: MouseEvent | TouchEvent) {
+    if (!isDraggingColorStop || !draggedStopId || !colorStopBarComponent) return;
+    
+    // Get the client X position (handle both mouse and touch events)
+    let clientX: number;
+    if ('touches' in e) {
+      clientX = e.touches[0].clientX;
+    } else {
+      clientX = e.clientX;
+    }
+    
+    // Use the component's method to get the bar rect
+    const rect = colorStopBarComponent.getBarRect();
+    if (!rect) return;
+    
+    // Calculate the percentage position within the color stop bar
+    const x = clientX - rect.left;
+    let percentage = (x / rect.width) * 100;
+    
+    // Clamp the percentage between 0 and 100
+    percentage = Math.max(0, Math.min(100, percentage));
+    
+    // Update the stop directly in the map
+    if (colorStopsMap[draggedStopId]) {
+      colorStopsMap = {
+        ...colorStopsMap,
+        [draggedStopId]: {
+          ...colorStopsMap[draggedStopId],
+          position: percentage
+        }
+      };
+    }
+    
+    e.preventDefault();
+  }
+  
+  function handleDragEnd(e: MouseEvent | TouchEvent) {
+    if (!isDraggingColorStop || !draggedStopId) return;
+    
+    // No need to sort or do anything special - the derived colorStops array
+    // will automatically be sorted based on position
+    
+    // Remove event listeners
+    document.removeEventListener('mousemove', handleDragMove);
+    document.removeEventListener('touchmove', handleDragMove);
+    document.removeEventListener('mouseup', handleDragEnd);
+    document.removeEventListener('touchend', handleDragEnd);
+    document.removeEventListener('touchcancel', handleDragEnd);
+    
+    // Reset drag state
+    isDraggingColorStop = false;
+    draggedStopId = null;
+    
+    e.preventDefault();
+  }
+  
+  // Helper function to interpolate between two colors
+  function interpolateColor(color1: string, color2: string, ratio: number) {
+    const r1 = parseInt(color1.slice(1, 3), 16);
+    const g1 = parseInt(color1.slice(3, 5), 16);
+    const b1 = parseInt(color1.slice(5, 7), 16);
+    
+    const r2 = parseInt(color2.slice(1, 3), 16);
+    const g2 = parseInt(color2.slice(3, 5), 16);
+    const b2 = parseInt(color2.slice(5, 7), 16);
+    
+    const r = Math.round(r1 + (r2 - r1) * ratio);
+    const g = Math.round(g1 + (g2 - g1) * ratio);
+    const b = Math.round(b1 + (b2 - b1) * ratio);
+    
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  }
+  
+  // Export function
+  function exportGradient() {
+    // Create a new canvas with the export size
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = exportWidth;
+    exportCanvas.height = exportHeight;
+    const exportCtx = exportCanvas.getContext('2d');
+    
+    if (!exportCtx) return;
+    
+    // Draw checkerboard pattern for transparency
+    const tileSize = 10;
+    const lightColor = '#f0f0f0';
+    const darkColor = '#e0e0e0';
+    
+    for (let y = 0; y < exportHeight; y += tileSize) {
+      for (let x = 0; x < exportWidth; x += tileSize) {
+        exportCtx.fillStyle = ((x / tileSize) + (y / tileSize)) % 2 === 0 ? lightColor : darkColor;
+        exportCtx.fillRect(x, y, tileSize, tileSize);
+      }
+    }
+    
+    // Render gradient to export canvas
+    let gradient;
+    
+    if (gradientType === 'linear') {
+      const radians = angle * (Math.PI / 180);
+      const diagonal = Math.sqrt(exportWidth * exportWidth + exportHeight * exportHeight);
+      
+      const centerX = exportWidth / 2;
+      const centerY = exportHeight / 2;
+      const startX = centerX - Math.cos(radians) * diagonal / 2;
+      const startY = centerY - Math.sin(radians) * diagonal / 2;
+      const endX = centerX + Math.cos(radians) * diagonal / 2;
+      const endY = centerY + Math.sin(radians) * diagonal / 2;
+      
+      gradient = exportCtx.createLinearGradient(startX, startY, endX, endY);
+    } else {
+      const x = (centerX / 100) * exportWidth;
+      const y = (centerY / 100) * exportHeight;
+      const radius = Math.min(exportWidth, exportHeight) / 2;
+      
+      gradient = exportCtx.createRadialGradient(x, y, 0, x, y, radius);
+    }
+    
+    // Sort color stops by position
+    const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+    
+    // Add color stops
+    sortedStops.forEach(stop => {
+      const rgba = hexToRgba(stop.color, stop.alpha);
+      gradient.addColorStop(stop.position / 100, rgba);
+    });
+    
+    exportCtx.fillStyle = gradient;
+    exportCtx.fillRect(0, 0, exportWidth, exportHeight);
+    
+    // Convert to data URL and trigger download
+    const dataURL = exportCanvas.toDataURL(`image/${exportFormat}`);
+    const link = document.createElement('a');
+    link.download = `gradient-texture.${exportFormat}`;
+    link.href = dataURL;
+    link.click();
+  }
+  
+  // Helper function to convert hex to rgba
+  function hexToRgba(hex: string, alpha: number = 1): string {
+    // Remove # if present
+    hex = hex.replace('#', '');
+    
+    // Parse the hex values
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    // Format alpha to 2 decimal places max
+    const formattedAlpha = alpha.toFixed(2).replace(/\.?0+$/, '');
+    
+    // Return rgba string
+    return `rgba(${r}, ${g}, ${b}, ${formattedAlpha})`;
+  }
+  
+  // Generate CSS code for the current gradient
+  function generateCssCode(): string {
+    // Sort color stops by position
+    const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+    
+    // Generate the color stops string with more detailed formatting
+    const colorStopsString = sortedStops.map(stop => {
+      const rgba = hexToRgba(stop.color, stop.alpha);
+      // Format position to max 2 decimal places
+      const position = stop.position.toFixed(2).replace(/\.?0+$/, '');
+      return `${rgba} ${position}%`;
+    }).join(', ');
+    
+    // Generate the CSS code based on gradient type
+    if (gradientType === 'linear') {
+      // Format angle to max 2 decimal places
+      const formattedAngle = angle.toFixed(2).replace(/\.?0+$/, '');
+      return `background: linear-gradient(${formattedAngle}deg, ${colorStopsString});`;
+    } else {
+      // Format center position to max 2 decimal places
+      const formattedCenterX = centerX.toFixed(2).replace(/\.?0+$/, '');
+      const formattedCenterY = centerY.toFixed(2).replace(/\.?0+$/, '');
+      return `background: radial-gradient(circle at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
+    }
+  }
+  
+  // Generate the full CSS code block
+  function generateFullCssCode(): string {
+    return generateCssCode();
+  }
+  
+  // Copy CSS code to clipboard
+  function copyCssToClipboard() {
+    const cssCode = generateFullCssCode();
+    navigator.clipboard.writeText(cssCode)
+      .then(() => {
+        // Could add a toast notification here
+        console.log('CSS copied to clipboard');
+      })
+      .catch(err => {
+        console.error('Could not copy CSS: ', err);
+      });
+  }
+  
+  // Event handlers for components
+  function handleAngleChange(newAngle: number) {
+    angle = newAngle;
+  }
+  
+  function handleCenterChange(newX: number, newY: number) {
+    centerX = newX;
+    centerY = newY;
+  }
+  
+  function handleSnapChange(isSnapping: boolean) {
+    isSnappingEnabled = isSnapping;
+  }
+</script>
+
+<WIPBanner />
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+  <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 font-heading">Gradient Texture Generator</h1>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- Gradient Preview -->
+    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+      
+      <GradientPreview 
+        {gradientType}
+        {angle}
+        {centerX}
+        {centerY}
+        {colorStops}
+        {previewSize}
+        {isSnappingEnabled}
+        onAngleChange={handleAngleChange}
+        onCenterChange={handleCenterChange}
+      />
+      
+      <!-- Instructions for color stop bar -->
+      <p class="text-sm text-gray-600 mt-4 mb-2 text-center">Click to add a color stop, click on a stop to edit, double-click to remove, drag to move</p>
+      
+      <!-- Color Stop Bar -->
+      <ColorStopBar
+        {colorStops}
+        selectedStopId={selectedStopId}
+        onColorStopSelect={selectColorStop}
+        onColorStopRemove={removeColorStop}
+        onColorStopAdd={addColorStop}
+        onColorStopDragStart={handleColorStopDragStart}
+        bind:this={colorStopBarComponent}
+      />
+    </div>
+    
+    <!-- Gradient Settings -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      
+      <!-- Gradient Type -->
+      <div class="mb-4">
+        <GradientTypeSelector bind:gradientType />
+      </div>
+      
+      <!-- Angle/Center Controls -->
+      <div class="mb-4">
+        {#if gradientType === 'linear'}
+          <AngleControl 
+            {angle} 
+            onAngleChange={handleAngleChange}
+            onSnapChange={handleSnapChange}
+          />
+        {:else}
+          <CenterControl 
+            {centerX} 
+            {centerY} 
+            onCenterChange={handleCenterChange}
+          />
+        {/if}
+      </div>
+      
+      <!-- Selected Color Stop Controls -->
+      <ColorPicker 
+        selectedStop={colorPickerStop}
+        onColorChange={(updatedStop) => {
+          if (selectedStop) {
+            updateSelectedStopProperties(updatedStop.color, updatedStop.position, updatedStop.alpha);
+          }
+        }}
+      />
+      
+      <!-- Separator line -->
+      <hr class="my-4 border-gray-300">
+      
+      <!-- Advertisement Placeholder -->
+      <AdvertisementPlaceholder />
+    </div>
+  </div>
+  
+  <!-- Export Settings and CSS Code (Horizontal) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Export Settings -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4">Export Settings</h2>
+      <ExportSettings 
+        bind:exportWidth
+        bind:exportHeight
+        bind:exportFormat
+        onExport={exportGradient}
+      />
+    </div>
+    
+    <!-- CSS Code Display -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">CSS Code</h2>
+        <button 
+          type="button"
+          class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm flex items-center"
+          onclick={copyCssToClipboard}
+        >
+          <span class="mr-1">Copy</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+          </svg>
+        </button>
+      </div>
+      <div class="bg-gray-800 p-4 rounded-md font-mono text-sm text-white">
+        <pre class="whitespace-pre-wrap break-all"><code>{generateFullCssCode()}</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :global(body) {
+    background-color: #f9fafb;
+  }
+</style>

@@ -1,0 +1,18 @@
+we want to create a website that geneates gradient textures
+for that we use the Svelte + TailwindCSS + Vite Stack.
+We want it to be super fast and reactive with clean UI and UX
+we want to be able to preview any changes we do to the gradient
+Features:
+- Large square preview of the gradient (512px)
+- Setting for Linear/Radial Gradient
+- Setting for export size
+- setting for export format
+- Export button to export the texture
+- a simple and intuitive way to set the gradient angle/center for example with a handle directly on the gradient preview
+- A bar that holds the color stops which also previews the gradient
+ - color stops shouls be added on the bar where you click it (with a handle to move them around)
+ - double clicking a color stop should remove it
+ single clicking a color stop sohuld open a color picker
+ - colors can have alpha
+- anything thats a handle needs to have its values displayed somehwere for manual input
+- overall styling should be very clean and consistent
