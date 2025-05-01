@@ -1,8 +1,11 @@
+/* Tailwind import */
 @import 'tailwindcss';
+
 /* Tailwind plugins are configured in tailwind.config.js */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+/* Global font styles */
+/* Note: We're using Tailwind classes directly in the HTML instead of @apply */
+/* The fonts are configured in tailwind.config.js */
 
 /* Remove spinner buttons from number inputs */
 input[type=number] {

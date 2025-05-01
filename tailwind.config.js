@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["'Plus Jakarta Sans'", 'sans-serif'],
-        heading: ["'Space Grotesk'", 'sans-serif']
+        sans: ['Urbanist', 'sans-serif'],
+        heading: ['Chivo', 'sans-serif']
       }
     },
   },
