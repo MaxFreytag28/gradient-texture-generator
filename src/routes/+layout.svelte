@@ -8,14 +8,14 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 	<!-- Urbanist from Google Fonts -->
 	<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
-	<!-- Chivo from Google Fonts -->
-	<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@500;600;700&display=swap" rel="stylesheet">
+	<!-- Cal Sans from Google Fonts -->
+	<!-- Cal Sans is already imported in app.html -->
 	<style>
 		body {
 			font-family: 'Urbanist', sans-serif !important;
 		}
 		h1, h2, h3, h4, h5, h6, .font-heading {
-			font-family: 'Chivo', sans-serif !important;
+			font-family: 'Cal Sans', sans-serif !important;
 			font-weight: 600;
 		}
 		h1, h2, h3 {
