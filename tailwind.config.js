@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["'Plus Jakarta Sans'", 'sans-serif'],
-        heading: ["'Space Grotesk'", 'sans-serif']
+        heading: ["'Cal Sans'", 'sans-serif']
       }
     },
   },
