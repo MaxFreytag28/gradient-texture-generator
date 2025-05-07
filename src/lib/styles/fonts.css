@@ -1,0 +1,50 @@
+/* Typography System */
+
+/* Primary Font: Urbanist */
+body {
+  font-family: 'Urbanist', sans-serif;
+}
+
+/* Display Font: Chivo */
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: 'Chivo', sans-serif;
+  font-weight: 600;
+  color: #c7c5c4;
+}
+
+/* Heading Styles */
+h1, h2, h3 {
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+/* Button Styles */
+button.font-heading {
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Optional flair for headings */
+.heading-expanded {
+  font-stretch: expanded;
+}
+
+/* Custom letter spacing for UI elements */
+.letter-wide {
+  letter-spacing: 0.06em;
+}

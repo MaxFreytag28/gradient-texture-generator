@@ -542,7 +542,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Export Settings -->
     <div class="bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-4">Export Settings</h2>
+      <h2 class="text-xl font-semibold mb-4 font-heading">Export Settings</h2>
       <ExportSettings 
         bind:exportWidth
         bind:exportHeight
@@ -554,10 +554,10 @@
     <!-- CSS Code Display -->
     <div class="bg-white p-6 rounded-lg shadow-md">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold">CSS Code</h2>
+        <h2 class="text-xl font-semibold font-heading">CSS Code</h2>
         <button 
           type="button"
-          class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm flex items-center"
+          class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm flex items-center font-heading"
           onclick={copyCssToClipboard}
         >
           <span class="mr-1">Copy</span>
