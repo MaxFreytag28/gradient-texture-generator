@@ -95,7 +95,7 @@
   <button 
     type="button" 
     onclick={onExport}
-    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded font-heading"
+    class="w-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded font-heading"
   >
     Export Texture
   </button>

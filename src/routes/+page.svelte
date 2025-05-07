@@ -101,6 +101,22 @@
   let colorStopBarComponent: any;
   const previewSize = 512;
   
+  // Update the gradient border when any gradient property changes
+  $effect(() => {
+    if (gradientType || angle || centerX || centerY || colorStops.length > 0) {
+      updateGradientBorderCssVar();
+    }
+  });
+  
+  // Initialize on mount
+  onMount(() => {
+    // This code only runs in the browser, not during SSR
+    if (typeof window !== 'undefined') {
+      // Initialize the gradient border CSS variable
+      updateGradientBorderCssVar();
+    }
+  });
+  
   // Color stop functions
   function addColorStop(e: MouseEvent) {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -402,6 +418,9 @@
   
   // Generate CSS code for the current gradient
   function generateCssCode(): string {
+    // Update the CSS variable for the gradient border
+    updateGradientBorderCssVar();
+    
     // Sort color stops by position
     const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
     
@@ -415,6 +434,8 @@
     
     // Generate the CSS code based on gradient type
     if (gradientType === 'linear') {
+      // Use the angle directly as it's already in CSS convention
+      // In CSS: 0deg = bottom to top, 90deg = left to right
       // Format angle to max 2 decimal places
       const formattedAngle = angle.toFixed(2).replace(/\.?0+$/, '');
       return `background: linear-gradient(${formattedAngle}deg, ${colorStopsString});`;
@@ -429,6 +450,37 @@
   // Generate the full CSS code block
   function generateFullCssCode(): string {
     return generateCssCode();
+  }
+  
+  // Update CSS variable for gradient border
+  function updateGradientBorderCssVar() {
+    // Only run in browser environment, not during SSR
+    if (typeof window === 'undefined') return;
+    
+    // Sort color stops by position
+    const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+    
+    // Generate the color stops string
+    const colorStopsString = sortedStops.map(stop => {
+      const rgba = hexToRgba(stop.color, stop.alpha);
+      const position = stop.position.toFixed(2).replace(/\.?0+$/, '');
+      return `${rgba} ${position}%`;
+    }).join(', ');
+    
+    // Create the gradient CSS
+    let gradientCSS;
+    if (gradientType === 'linear') {
+      // Use the angle directly as it's already in CSS convention
+      // In CSS: 0deg = bottom to top, 90deg = left to right
+      gradientCSS = `linear-gradient(${angle}deg, ${colorStopsString})`;
+    } else {
+      gradientCSS = `radial-gradient(circle at ${centerX}% ${centerY}%, ${colorStopsString})`;
+    }
+    
+    // Set the CSS variable - only in browser environment
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--current-gradient', gradientCSS);
+    }
   }
   
   // Copy CSS code to clipboard
@@ -461,12 +513,19 @@
 
 <WIPBanner />
 
-<div class="container mx-auto px-4 py-8 max-w-6xl">
-  <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 font-heading">Gradient Texture Generator</h1>
+<!-- Main layout with side heading -->
+<div class="relative container mx-auto px-4 py-8 max-w-6xl">
+  <!-- Side heading (vertical text) -->
+  <div class="absolute left-0 top-0 bottom-0 flex items-start">
+    <h1 class="vertical-text text-5xl font-bold text-gray-800 font-heading whitespace-nowrap">GRADIENT TEXTURE GENERATOR</h1>
+  </div>
+  
+  <!-- Hidden heading for accessibility/SEO -->
+  <h1 class="sr-only">Gradient Texture Generator</h1>
   
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Gradient Preview -->
-    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+    <div class="lg:col-span-2 bg-white p-6 rounded-lg gradient-border">
       
       <GradientPreview 
         {gradientType}
@@ -496,7 +555,7 @@
     </div>
     
     <!-- Gradient Settings -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="bg-white p-6 rounded-lg gradient-border">
       
       <!-- Gradient Type -->
       <div class="mb-4">
@@ -541,7 +600,7 @@
   <!-- Export Settings and CSS Code (Horizontal) -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Export Settings -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="bg-white p-6 rounded-lg gradient-border">
       <h2 class="text-xl font-semibold mb-4 font-heading">Export Settings</h2>
       <ExportSettings 
         bind:exportWidth
@@ -552,12 +611,12 @@
     </div>
     
     <!-- CSS Code Display -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="bg-white p-6 rounded-lg gradient-border">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold font-heading">CSS Code</h2>
         <button 
           type="button"
-          class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm flex items-center font-heading"
+          class="px-3 py-1 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded text-sm flex items-center font-heading"
           onclick={copyCssToClipboard}
         >
           <span class="mr-1">Copy</span>
@@ -576,5 +635,26 @@
 <style>
   :global(body) {
     background-color: #f9fafb;
+  }
+  
+  :global(.gradient-border) {
+    border: 2px solid transparent;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    background-image: linear-gradient(to bottom, white, white), var(--current-gradient);
+  }
+  
+  /* Vertical text for side heading */
+  .vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    position: absolute;
+    left: -50px; /* Position outside the main content area */
+    color: #9e9995; /* Match the heading color from layout.svelte */
+    opacity: 0.8;
+    letter-spacing: -0.02em; /* Match the letter-spacing from layout.svelte */
+    top: 42px; /* Increased top spacing for better visual weight */
+    text-transform: uppercase;
+    font-weight: 500; /* Increased weight for better visibility */
   }
 </style>

@@ -16,16 +16,17 @@
 		}
 		h1, h2, h3, h4, h5, h6, .font-heading {
 			font-family: 'Cal Sans', sans-serif !important;
-			font-weight: 600;
+			font-weight: 400;
+			color: #9e9995;
 		}
 		h1, h2, h3 {
 			text-transform: uppercase;
 			letter-spacing: -0.02em;
-			font-weight: 700;
+			font-weight: 400;
 		}
 		button.font-heading {
 			letter-spacing: 0.06em;
-			font-weight: 600;
+			font-weight: 400;
 		}
 	</style>
 </svelte:head>

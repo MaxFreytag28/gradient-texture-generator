@@ -62,8 +62,11 @@
     const size = props.previewSize || 512;
     
     if (props.gradientType === 'linear') {
-      // Calculate handle position based on angle
-      const radians = (localAngle + 180) * (Math.PI / 180);
+      // Calculate handle position based on CSS angle convention
+      // CSS: 0deg = bottom to top, 90deg = left to right
+      // Convert to radians for handle positioning
+      const cssToCanvasAngle = (90 - localAngle) % 360; // Convert CSS angle to canvas angle
+      const radians = (cssToCanvasAngle + 180) * (Math.PI / 180);
       const lineLength = size * 0.2; // Fixed line length - 20% of the canvas size for handle position
       handleX = size / 2 + Math.cos(radians) * lineLength;
       handleY = size / 2 + Math.sin(radians) * lineLength;
@@ -87,9 +90,11 @@
     let gradient;
     
     if (props.gradientType === 'linear') {
-      // Calculate start and end points based on angle
-      // We need to use the angle directly since we've rotated the control
-      const radians = localAngle * (Math.PI / 180);
+      // Convert angle from CSS convention to canvas coordinates
+      // CSS: 0deg = bottom to top, 90deg = left to right
+      // We need to adjust the angle to match this convention in canvas
+      const cssToCanvasAngle = (90 - localAngle) % 360; // Convert CSS angle to canvas angle
+      const radians = cssToCanvasAngle * (Math.PI / 180);
       const diagonal = Math.sqrt(2) * size;
       
       const startX = size / 2 - Math.cos(radians) * diagonal / 2;
@@ -208,13 +213,17 @@
     handleY = (clampedY / rect.height) * (props.previewSize || 512);
     
     if (props.gradientType === 'linear') {
-      // Calculate angle from handle position
+      // Calculate angle based on handle position relative to center
       const size = props.previewSize || 512;
       const dx = handleX - size / 2;
       const dy = handleY - size / 2;
-      // Adjust the angle calculation to match our rotated control (180 degrees)
-      localAngle = (Math.atan2(dy, dx) * (180 / Math.PI) + 180) % 360;
-      if (localAngle < 0) localAngle += 360;
+      // Calculate canvas angle first
+      let canvasAngle = (Math.atan2(dy, dx) * (180 / Math.PI) + 180) % 360;
+      if (canvasAngle < 0) canvasAngle += 360;
+      
+      // Convert canvas angle to CSS angle
+      // CSS: 0deg = bottom to top, 90deg = left to right
+      localAngle = (90 - canvasAngle + 360) % 360;
       
       // Use the isSnappingEnabled prop directly instead of trying to detect it
       if (props.isSnappingEnabled) {
@@ -334,7 +343,13 @@
       // Calculate angle based on click position relative to center
       const dx = clickX - size / 2;
       const dy = clickY - size / 2;
-      localAngle = (Math.atan2(dy, dx) * (180 / Math.PI) + 180) % 360;
+      // Calculate canvas angle first
+      let canvasAngle = (Math.atan2(dy, dx) * (180 / Math.PI) + 180) % 360;
+      if (canvasAngle < 0) canvasAngle += 360;
+      
+      // Convert canvas angle to CSS angle
+      // CSS: 0deg = bottom to top, 90deg = left to right
+      localAngle = (90 - canvasAngle + 360) % 360;
       
       // Only apply snapping if it's enabled via the prop
       if (props.isSnappingEnabled) {
@@ -426,7 +441,7 @@
           width: {(props.previewSize || 512) * 0.3 - 24}px; 
           height: 1px; 
           background-color: rgba(0, 0, 0, 0.3);
-          transform: rotate({(localAngle + 180) % 360}deg);
+          transform: rotate({270 - localAngle}deg);
           transform-origin: left center;
         "
       ></div>
