@@ -1,12 +1,16 @@
 <script lang="ts">
+  import { type GradientType } from '$lib/types';
   // Props
-  export let gradientType: string;
+  export let gradientType: GradientType;
 </script>
 
 <div class="mb-6">
   <div class="block text-sm font-medium text-gray-700 mb-2">Gradient Type</div>
   <div class="toggle-switch-container">
-    <div class="toggle-switch" class:radial={gradientType === 'radial'}>
+    <div class="toggle-switch" 
+      class:radial={gradientType === 'radial'}
+      class:conic={gradientType === 'conic'}
+    >
       <button 
         class="toggle-option" 
         class:active={gradientType === 'linear'}
@@ -22,6 +26,14 @@
         type="button"
       >
         Radial
+      </button>
+      <button 
+        class="toggle-option" 
+        class:active={gradientType === 'conic'}
+        on:click={() => gradientType = 'conic'}
+        type="button"
+      >
+        Conic
       </button>
     </div>
   </div>
@@ -70,7 +82,7 @@
     top: 0.125rem;
     left: 0.125rem;
     height: calc(100% - 0.25rem);
-    width: calc(50% - 0.25rem);
+    width: calc(33.333% - 0.25rem);
     background-color: white;
     border-radius: 0.375rem;
     transition: none;
@@ -79,5 +91,9 @@
   
   .toggle-switch.radial::before {
     transform: translateX(calc(100% + 0.25rem));
+  }
+  
+  .toggle-switch.conic::before {
+    transform: translateX(calc(200% + 0.5rem));
   }
 </style>

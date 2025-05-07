@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { type ColorStop } from '$lib/types';
+  import { type ColorStop, type GradientType, type RadialGradientOptions } from '$lib/types';
   
   // Import components
   import WIPBanner from '$lib/components/WIPBanner.svelte';
@@ -10,15 +10,21 @@
   import GradientTypeSelector from '$lib/components/GradientTypeSelector.svelte';
   import AngleControl from '$lib/components/AngleControl.svelte';
   import CenterControl from '$lib/components/CenterControl.svelte';
+  import RadialScaleControl from '$lib/components/RadialScaleControl.svelte';
   import ExportSettings from '$lib/components/ExportSettings.svelte';
   import AdvertisementPlaceholder from '$lib/components/AdvertisementPlaceholder.svelte';
   
   // Gradient properties
-  let gradientType = $state<'linear' | 'radial'>('linear');
+  let gradientType = $state<GradientType>('linear');
   let angle = $state(90);
   let centerX = $state(50);
   let centerY = $state(50);
   let isSnappingEnabled = $state(false);
+  
+  // Radial gradient options
+  let radialOptions = $state<RadialGradientOptions>({
+    scale: 1.0 // Default scale (1.0 = 100%)
+  });
   
   // Export settings
   let exportWidth = $state(512);
@@ -357,7 +363,7 @@
     }
     
     // Render gradient to export canvas
-    let gradient;
+    let gradient: CanvasGradient | null = null;
     
     if (gradientType === 'linear') {
       const radians = angle * (Math.PI / 180);
@@ -371,25 +377,38 @@
       const endY = centerY + Math.sin(radians) * diagonal / 2;
       
       gradient = exportCtx.createLinearGradient(startX, startY, endX, endY);
-    } else {
+    } else if (gradientType === 'radial') {
       const x = (centerX / 100) * exportWidth;
       const y = (centerY / 100) * exportHeight;
-      const radius = Math.min(exportWidth, exportHeight) / 2;
+      
+      // Apply scaling if provided
+      const scale = radialOptions.scale;
+      const radius = Math.min(exportWidth, exportHeight) / 2 * scale;
       
       gradient = exportCtx.createRadialGradient(x, y, 0, x, y, radius);
+    } else if (gradientType === 'conic') {
+      const x = (centerX / 100) * exportWidth;
+      const y = (centerY / 100) * exportHeight;
+      
+      // Convert angle to radians for conic gradient
+      const startAngle = (angle * Math.PI) / 180;
+      
+      gradient = exportCtx.createConicGradient(startAngle, x, y);
     }
     
     // Sort color stops by position
     const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
     
-    // Add color stops
-    sortedStops.forEach(stop => {
-      const rgba = hexToRgba(stop.color, stop.alpha);
-      gradient.addColorStop(stop.position / 100, rgba);
-    });
-    
-    exportCtx.fillStyle = gradient;
-    exportCtx.fillRect(0, 0, exportWidth, exportHeight);
+    // Add color stops if gradient was created successfully
+    if (gradient) {
+      sortedStops.forEach(stop => {
+        const rgba = hexToRgba(stop.color, stop.alpha);
+        gradient.addColorStop(stop.position / 100, rgba);
+      });
+      
+      exportCtx.fillStyle = gradient;
+      exportCtx.fillRect(0, 0, exportWidth, exportHeight);
+    }
     
     // Convert to data URL and trigger download
     const dataURL = exportCanvas.toDataURL(`image/${exportFormat}`);
@@ -439,12 +458,32 @@
       // Format angle to max 2 decimal places
       const formattedAngle = angle.toFixed(2).replace(/\.?0+$/, '');
       return `background: linear-gradient(${formattedAngle}deg, ${colorStopsString});`;
-    } else {
+    } else if (gradientType === 'radial') {
       // Format center position to max 2 decimal places
       const formattedCenterX = centerX.toFixed(2).replace(/\.?0+$/, '');
       const formattedCenterY = centerY.toFixed(2).replace(/\.?0+$/, '');
-      return `background: radial-gradient(circle at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
+      
+      // Apply scaling if provided (convert scale to percentage of the size)
+      const scale = radialOptions.scale;
+      
+      // Use circle with size if scale is not 1.0 (100%)
+      if (scale !== 1.0) {
+        // For radial gradients, we use a percentage of the container size
+        return `background: radial-gradient(circle at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
+      } else {
+        return `background: radial-gradient(circle at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
+      }
+    } else if (gradientType === 'conic') {
+      // Format center position and angle to max 2 decimal places
+      const formattedCenterX = centerX.toFixed(2).replace(/\.?0+$/, '');
+      const formattedCenterY = centerY.toFixed(2).replace(/\.?0+$/, '');
+      const formattedAngle = angle.toFixed(2).replace(/\.?0+$/, '');
+      
+      return `background: conic-gradient(from ${formattedAngle}deg at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
     }
+    
+    // Default return in case none of the conditions match (should never happen)
+    return `background: linear-gradient(90deg, ${colorStopsString});`;
   }
   
   // Generate the full CSS code block
@@ -468,13 +507,18 @@
     }).join(', ');
     
     // Create the gradient CSS
-    let gradientCSS;
+    let gradientCSS = `linear-gradient(90deg, ${colorStopsString})`; // Default value
     if (gradientType === 'linear') {
       // Use the angle directly as it's already in CSS convention
       // In CSS: 0deg = bottom to top, 90deg = left to right
       gradientCSS = `linear-gradient(${angle}deg, ${colorStopsString})`;
-    } else {
+    } else if (gradientType === 'radial') {
+      // For radial gradients with scaling, we need to adjust the implementation
+      // CSS radial gradients can use a size keyword or length, but it's complex to calculate
+      // For now, we'll use the circle shape with the center position
       gradientCSS = `radial-gradient(circle at ${centerX}% ${centerY}%, ${colorStopsString})`;
+    } else if (gradientType === 'conic') {
+      gradientCSS = `conic-gradient(from ${angle}deg at ${centerX}% ${centerY}%, ${colorStopsString})`;
     }
     
     // Set the CSS variable - only in browser environment
@@ -504,6 +548,13 @@
   function handleCenterChange(newX: number, newY: number) {
     centerX = newX;
     centerY = newY;
+    updateGradientBorderCssVar();
+  }
+  
+  // Handle radial scale change
+  function handleRadialScaleChange(newScale: number) {
+    radialOptions.scale = newScale;
+    updateGradientBorderCssVar();
   }
   
   function handleSnapChange(isSnapping: boolean) {
@@ -535,6 +586,7 @@
         {colorStops}
         {previewSize}
         {isSnappingEnabled}
+        radialOptions={radialOptions}
         onAngleChange={handleAngleChange}
         onCenterChange={handleCenterChange}
       />
@@ -570,12 +622,34 @@
             onAngleChange={handleAngleChange}
             onSnapChange={handleSnapChange}
           />
-        {:else}
+        {:else if gradientType === 'radial'}
           <CenterControl 
             {centerX} 
             {centerY} 
             onCenterChange={handleCenterChange}
           />
+          
+          <!-- Radial Scale Control -->
+          <div class="mt-4">
+            <RadialScaleControl 
+              {radialOptions}
+              onScaleChange={handleRadialScaleChange}
+            />
+          </div>
+        {:else if gradientType === 'conic'}
+          <div class="space-y-4">
+            <CenterControl 
+              {centerX} 
+              {centerY} 
+              onCenterChange={handleCenterChange}
+            />
+            
+            <AngleControl 
+              {angle} 
+              onAngleChange={handleAngleChange}
+              onSnapChange={handleSnapChange}
+            />
+          </div>
         {/if}
       </div>
       
