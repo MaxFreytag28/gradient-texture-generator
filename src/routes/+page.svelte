@@ -568,7 +568,7 @@
 <div class="relative container mx-auto px-4 py-8 max-w-6xl">
   <!-- Side heading (vertical text) -->
   <div class="absolute left-0 top-0 bottom-0 flex items-start">
-    <h1 class="vertical-text text-5xl font-bold text-gray-800 font-heading whitespace-nowrap">GRADIENT TEXTURE GENERATOR</h1>
+    <h1 class="vertical-text text-5xl theme-heading whitespace-nowrap">GRADIENT TEXTURE GENERATOR</h1>
   </div>
   
   <!-- Hidden heading for accessibility/SEO -->
@@ -576,7 +576,8 @@
   
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Gradient Preview -->
-    <div class="lg:col-span-2 bg-white p-6 rounded-lg gradient-border">
+    <div class="lg:col-span-2 theme-card p-6 rounded-lg gradient-border">
+      <h2 class="text-xl mb-4 theme-heading">Preview</h2>
       
       <GradientPreview 
         {gradientType}
@@ -592,7 +593,7 @@
       />
       
       <!-- Instructions for color stop bar -->
-      <p class="text-sm text-gray-600 mt-4 mb-2 text-center">Click to add a color stop, click on a stop to edit, double-click to remove, drag to move</p>
+      <p class="text-sm mt-4 mb-2 text-center theme-text-muted">Click to add a color stop, click on a stop to edit, double-click to remove, drag to move</p>
       
       <!-- Color Stop Bar -->
       <ColorStopBar
@@ -607,8 +608,8 @@
     </div>
     
     <!-- Gradient Settings -->
-    <div class="bg-white p-6 rounded-lg gradient-border">
-      
+    <div class="theme-card p-6 rounded-lg gradient-border">
+      <h2 class="text-xl mb-4 theme-heading">Settings</h2>
       <!-- Gradient Type -->
       <div class="mb-4">
         <GradientTypeSelector bind:gradientType />
@@ -664,7 +665,7 @@
       />
       
       <!-- Separator line -->
-      <hr class="my-4 border-gray-300">
+      <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;">
       
       <!-- Advertisement Placeholder -->
       <AdvertisementPlaceholder />
@@ -674,8 +675,8 @@
   <!-- Export Settings and CSS Code (Horizontal) -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Export Settings -->
-    <div class="bg-white p-6 rounded-lg gradient-border">
-      <h2 class="text-xl font-semibold mb-4 font-heading">Export Settings</h2>
+    <div class="theme-card p-6 rounded-lg gradient-border">
+      <h2 class="text-xl font-semibold mb-4 theme-heading">Export Settings</h2>
       <ExportSettings 
         bind:exportWidth
         bind:exportHeight
@@ -685,12 +686,12 @@
     </div>
     
     <!-- CSS Code Display -->
-    <div class="bg-white p-6 rounded-lg gradient-border">
+    <div class="theme-card p-6 rounded-lg gradient-border">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold font-heading">CSS Code</h2>
+        <h2 class="text-xl font-semibold theme-heading">CSS Code</h2>
         <button 
           type="button"
-          class="px-3 py-1 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded text-sm flex items-center font-heading"
+          class="theme-button-secondary px-3 py-1 rounded text-sm flex items-center"
           onclick={copyCssToClipboard}
         >
           <span class="mr-1">Copy</span>
@@ -699,7 +700,7 @@
           </svg>
         </button>
       </div>
-      <div class="bg-gray-800 p-4 rounded-md font-mono text-sm text-white">
+      <div class="theme-code font-mono text-sm">
         <pre class="whitespace-pre-wrap break-all"><code>{generateFullCssCode()}</code></pre>
       </div>
     </div>
@@ -707,15 +708,11 @@
 </div>
 
 <style>
-  :global(body) {
-    background-color: #f9fafb;
-  }
-  
   :global(.gradient-border) {
-    border: 2px solid transparent;
+    border: 0px solid transparent;
     background-clip: padding-box, border-box;
     background-origin: padding-box, border-box;
-    background-image: linear-gradient(to bottom, white, white), var(--current-gradient);
+    /* background-image: linear-gradient(to bottom, var(--color-bg-secondary), var(--color-bg-secondary)), var(--current-gradient); */
   }
   
   /* Vertical text for side heading */
@@ -724,11 +721,8 @@
     transform: rotate(180deg);
     position: absolute;
     left: -50px; /* Position outside the main content area */
-    color: #9e9995; /* Match the heading color from layout.svelte */
-    opacity: 0.8;
-    letter-spacing: -0.02em; /* Match the letter-spacing from layout.svelte */
     top: 42px; /* Increased top spacing for better visual weight */
-    text-transform: uppercase;
-    font-weight: 500; /* Increased weight for better visibility */
+    color: var(--color-text-heading);
+    font-weight: var(--font-weight-heading);
   }
 </style>

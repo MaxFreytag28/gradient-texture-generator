@@ -49,18 +49,19 @@
 
 <div class="mb-6">
   <div class="flex items-center justify-between mb-1">
-    <label for="angle-input" class="block text-sm font-medium text-gray-700">Angle:</label>
+    <label for="angle-input" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Angle:</label>
     <div class="relative w-20">
       <input 
         type="number" 
         value={localAngle.toFixed(1)} 
         oninput={handleInput}
-        class="w-full py-1 px-2 text-sm border border-gray-300 rounded no-spinner"
+        class="w-full py-1 px-2 text-sm rounded no-spinner"
+        style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
         min="0"
         max="360"
         step="0.1"
       />
-      <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">°</span>
+      <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs theme-text-muted">°</span>
     </div>
   </div>
   
@@ -71,7 +72,7 @@
       bind:checked={snapToGrid} 
       class="mr-2"
     />
-    <label for="angle-snap-to-grid" class="text-sm text-gray-700">Snap to 5° increments</label>
+    <label for="angle-snap-to-grid" class="text-sm" style="color: var(--color-text-secondary);">Snap to 5° increments</label>
   </div>
   
   <input 
@@ -81,7 +82,8 @@
     step={snapToGrid ? "5" : "1"} 
     bind:value={localAngle} 
     oninput={handleSliderInput}
-    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-500"
+    class="w-full h-2 rounded-lg appearance-none cursor-pointer"
+    style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
     id="angle-input"
   >
 </div>

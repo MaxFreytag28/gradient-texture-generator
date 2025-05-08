@@ -5,7 +5,7 @@
 </script>
 
 <div class="mb-6">
-  <div class="block text-sm font-medium text-gray-700 mb-2">Gradient Type</div>
+  <div class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Gradient Type</div>
   <div class="toggle-switch-container">
     <div class="toggle-switch" 
       class:radial={gradientType === 'radial'}
@@ -48,11 +48,11 @@
   
   .toggle-switch {
     display: flex;
-    background-color: #f3f4f6;
+    background-color: var(--color-bg-tertiary);
     border-radius: 0.5rem;
     overflow: hidden;
     position: relative;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border-primary);
     width: 100%;
   }
   
@@ -65,14 +65,14 @@
     position: relative;
     cursor: pointer;
     transition: color 0.2s;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     z-index: 1;
     flex: 1;
     text-align: center;
   }
   
   .toggle-option.active {
-    color: #1f2937;
+    color: var(--color-text-primary);
     font-weight: 600;
   }
   
@@ -83,10 +83,10 @@
     left: 0.125rem;
     height: calc(100% - 0.25rem);
     width: calc(33.333% - 0.25rem);
-    background-color: white;
+    background-color: var(--color-bg-accent);
     border-radius: 0.375rem;
     transition: none;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
   
   .toggle-switch.radial::before {

@@ -9,15 +9,15 @@ body {
 h1, h2, h3, h4, h5, h6,
 .font-heading {
   font-family: 'Cal Sans', sans-serif;
-  font-weight: 600;
-  color: #c7c5c4;
+  font-weight: 400;
+  color: #c8c3bf;
 }
 
 /* Heading Styles */
 h1, h2, h3 {
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 h1 {
@@ -35,7 +35,7 @@ h3 {
 /* Button Styles */
 button.font-heading {
   letter-spacing: 0.06em;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
 }
 

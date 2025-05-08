@@ -3,7 +3,7 @@
 </script>
 
 <div class="container mx-auto px-4 py-8 max-w-3xl">
-  <h1 class="text-3xl font-bold mb-6">Legal Disclosure</h1>
+  <h1 class="text-3xl font-semibold mb-6 theme-heading">Legal Disclosure</h1>
 
   <p class="mb-4"><strong>Information pursuant to § 5 TMG</strong></p>
   <p class="mb-4">

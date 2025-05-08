@@ -63,11 +63,12 @@
     if (props.gradientType === 'linear') {
       // Calculate handle position based on CSS angle convention
       // In CSS: 0deg = to top, 90deg = to right, 180deg = to bottom, 270deg = to left
-      // Convert angle to radians, adjusting for CSS convention
-      const radians = (90 - localAngle) * (Math.PI / 180);
+      // Rotate 90 degrees counterclockwise by adding 270 degrees (or subtracting 90)
+      const adjustedAngle = (localAngle + 270) % 360;
+      const radians = adjustedAngle * (Math.PI / 180);
       const lineLength = displaySize * 0.2; // Fixed line length - 20% of the display size for handle position
       handleX = displaySize / 2 + Math.cos(radians) * lineLength;
-      handleY = displaySize / 2 - Math.sin(radians) * lineLength; // Note the minus sign for correct visual representation
+      handleY = displaySize / 2 + Math.sin(radians) * lineLength;
     } else if (props.gradientType === 'radial') {
       // For radial gradients, handle represents center
       handleX = (localCenterX / 100) * displaySize;
@@ -79,11 +80,12 @@
       handleY = (localCenterY / 100) * displaySize;
       
       // 2. Angle handle for rotation
-      // Convert angle to radians, adjusting for CSS convention
-      const radians = (90 - localAngle) * (Math.PI / 180);
+      // Rotate 90 degrees counterclockwise by adding 270 degrees (or subtracting 90)
+      const adjustedAngle = (localAngle + 270) % 360;
+      const radians = adjustedAngle * (Math.PI / 180);
       const lineLength = displaySize * 0.2; // Fixed line length - 20% of the display size for handle position
       angleHandleX = handleX + Math.cos(radians) * lineLength;
-      angleHandleY = handleY - Math.sin(radians) * lineLength; // Note the minus sign for correct visual representation
+      angleHandleY = handleY + Math.sin(radians) * lineLength;
     }
   }
   
@@ -213,11 +215,11 @@
       const dy = handleY - size / 2;
       
       // Calculate angle in radians and convert to degrees
-      // Using dy (not -dy) to make clockwise rotation match mouse movement
       let angle = Math.atan2(dy, dx) * (180 / Math.PI);
       
-      // Convert to CSS angle convention (0deg = to top, 90deg = to right)
-      angle = (90 - angle) % 360;
+      // Invert the angle to make clockwise rotation match mouse movement
+      // and convert to CSS angle convention (0deg = to top, 90deg = to right)
+      angle = (90 + angle) % 360;
       if (angle < 0) angle += 360;
       
       // Apply snapping if enabled
@@ -231,16 +233,18 @@
       props.onAngleChange(localAngle);
     } else if (props.gradientType === 'radial') {
       // For radial gradients, set center directly
-      localCenterX = (handleX / size) * 100;
-      localCenterY = (handleY / size) * 100;
+      // Round to one decimal place
+      localCenterX = Math.round((handleX / size) * 1000) / 10;
+      localCenterY = Math.round((handleY / size) * 1000) / 10;
       
       // Notify parent component
       props.onCenterChange(localCenterX, localCenterY);
     } else if (props.gradientType === 'conic') {
       if (isDraggingHandle) {
         // When dragging the center handle, update the center position
-        localCenterX = (handleX / size) * 100;
-        localCenterY = (handleY / size) * 100;
+        // Round to one decimal place
+        localCenterX = Math.round((handleX / size) * 1000) / 10;
+        localCenterY = Math.round((handleY / size) * 1000) / 10;
         
         // Update angle handle position based on new center
         const radians = localAngle * (Math.PI / 180);
@@ -256,11 +260,11 @@
         const dy = angleHandleY - handleY;
         
         // Calculate angle in radians and convert to degrees
-        // Using dy (not -dy) to make clockwise rotation match mouse movement
         let angle = Math.atan2(dy, dx) * (180 / Math.PI);
         
-        // Convert to CSS angle convention (0deg = to top, 90deg = to right)
-        angle = (90 - angle) % 360;
+        // Invert the angle to make clockwise rotation match mouse movement
+        // and convert to CSS angle convention (0deg = to top, 90deg = to right)
+        angle = (90 + angle) % 360;
         if (angle < 0) angle += 360;
         
         // Apply snapping if enabled
@@ -366,7 +370,7 @@
   }
   
   // Reset handle to default position on double-click
-  function resetHandle() {
+  function resetMainHandle(e: MouseEvent) {
     if (props.gradientType === 'linear') {
       // Reset angle to 90 degrees (left to right)
       localAngle = 90;
@@ -377,6 +381,15 @@
       localCenterY = 50;
       props.onCenterChange(localCenterX, localCenterY);
     }
+    updateHandlePosition();
+    updateGradientCSS();
+  }
+  
+  // Reset angle handle for conic gradient
+  function resetAngleHandle(e: MouseEvent) {
+    // Reset angle to 90 degrees
+    localAngle = 90;
+    props.onAngleChange(localAngle);
     updateHandlePosition();
     updateGradientCSS();
   }
@@ -394,27 +407,57 @@
     handleX = (x / rect.width) * size;
     handleY = (y / rect.height) * size;
     
-    if (props.gradientType === 'linear') {
+    if (props.gradientType === 'linear' || props.gradientType === 'conic') {
       // Calculate angle based on handle position relative to center
-      const dx = handleX - size / 2;
-      const dy = handleY - size / 2;
+      // For conic, we use the center of the preview as reference point
+      const centerX = props.gradientType === 'linear' ? size / 2 : (localCenterX / 100) * size;
+      const centerY = props.gradientType === 'linear' ? size / 2 : (localCenterY / 100) * size;
+      
+      const dx = handleX - centerX;
+      const dy = handleY - centerY;
       
       // Calculate angle in radians and convert to degrees
-      // Using dy (not -dy) to make clockwise rotation match mouse movement
       let angle = Math.atan2(dy, dx) * (180 / Math.PI);
       
-      // Convert to CSS angle convention
-      angle = (90 - angle) % 360;
+      // Invert the angle to make clockwise rotation match mouse movement
+      // and convert to CSS angle convention
+      angle = (90 + angle) % 360;
       if (angle < 0) angle += 360;
       
       localAngle = angle;
       props.onAngleChange(localAngle);
-    } else {
-      // For radial and conic gradients, set center directly
-      localCenterX = (handleX / size) * 100;
-      localCenterY = (handleY / size) * 100;
+      
+      // For conic, we need to update the angle handle position but not the center
+      if (props.gradientType === 'conic') {
+        // Update only the angle handle position
+        const radians = ((localAngle + 270) % 360) * (Math.PI / 180);
+        const lineLength = size * 0.2;
+        angleHandleX = (localCenterX / 100) * size + Math.cos(radians) * lineLength;
+        angleHandleY = (localCenterY / 100) * size + Math.sin(radians) * lineLength;
+        
+        // Start dragging the angle handle immediately
+        isDraggingAngleHandle = true;
+      } else {
+        // Start dragging the main handle immediately for linear gradient
+        isDraggingHandle = true;
+      }
+    } else if (props.gradientType === 'radial') {
+      // For radial gradients, set center directly
+      // Round to one decimal place
+      localCenterX = Math.round((handleX / size) * 1000) / 10;
+      localCenterY = Math.round((handleY / size) * 1000) / 10;
       props.onCenterChange(localCenterX, localCenterY);
+      
+      // Start dragging the center handle immediately
+      isDraggingHandle = true;
     }
+    
+    // Add event listeners for dragging
+    document.addEventListener('mousemove', dragHandle);
+    document.addEventListener('mouseup', stopDragHandle);
+    document.addEventListener('touchmove', dragHandle, { passive: false });
+    document.addEventListener('touchend', stopDragHandle);
+    document.addEventListener('touchcancel', stopDragHandle);
     
     updateHandlePosition();
     updateGradientCSS();
@@ -458,7 +501,7 @@
           width: {(props.previewSize || 512) * 0.3 - 24}px; 
           height: 1px; 
           background-color: rgba(0, 0, 0, 0.3);
-          transform: rotate({localAngle}deg);
+          transform: rotate({(localAngle + 270) % 360}deg);
           transform-origin: left center;
         "
       ></div>
@@ -472,7 +515,7 @@
           width: {(props.previewSize || 512) * 0.3 - 24}px; 
           height: 1px; 
           background-color: rgba(0, 0, 0, 0.3);
-          transform: rotate({localAngle}deg);
+          transform: rotate({(localAngle + 270) % 360}deg);
           transform-origin: left center;
         "
       ></div>
@@ -496,7 +539,7 @@
       onkeydown={handleKeydown}
       onmousedown={startDragHandle}
       ontouchstart={startDragHandle}
-      ondblclick={resetHandle}
+      ondblclick={resetMainHandle}
     ></div>
     
     <!-- Angle Handle for Conic Gradients -->
@@ -517,7 +560,7 @@
         aria-valuenow="{localAngle}"
         onmousedown={startDragAngleHandle}
         ontouchstart={startDragAngleHandle}
-        ondblclick={resetHandle}
+        ondblclick={resetAngleHandle}
       ></div>
     {/if}
   </div>

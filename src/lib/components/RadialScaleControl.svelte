@@ -15,7 +15,7 @@
 
 <div class="mb-6">
   <div class="flex justify-between items-center mb-2">
-    <label for="scale-slider" class="block text-sm font-medium text-gray-700">Radius Scale</label>
+    <label for="scale-slider" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Radius Scale</label>
     <div class="flex items-center">
       <input 
         type="number" 
@@ -29,9 +29,10 @@
             onScaleChange(value / 100);
           }
         }}
-        class="w-16 text-right px-2 py-1 border border-gray-300 rounded text-sm"
+        class="w-16 text-right px-2 py-1 rounded text-sm"
+        style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
       />
-      <span class="ml-1 text-sm text-gray-500">%</span>
+      <span class="ml-1 text-sm theme-text-muted">%</span>
     </div>
   </div>
   <input 
@@ -42,9 +43,10 @@
     step="0.05" 
     value={radialOptions.scale} 
     on:input={handleScaleChange}
-    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+    class="w-full h-2 rounded-lg appearance-none cursor-pointer"
+    style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
   />
-  <div class="flex justify-between text-xs text-gray-500 mt-1">
+  <div class="flex justify-between text-xs theme-text-muted mt-1">
     <span>10%</span>
     <span>100%</span>
     <span>200%</span>

@@ -57,7 +57,8 @@
     <div class="relative h-10 mb-6 mt-6">
       <!-- The actual gradient bar -->
       <div 
-        class="relative h-10 rounded-md border border-gray-300 color-stop-bar"
+        class="relative h-10 rounded-md color-stop-bar"
+        style="border: 1px solid var(--color-border-secondary);"
         bind:this={colorStopBar}
       >
         <!-- Checkerboard pattern for transparency -->
@@ -94,10 +95,10 @@
 
 <style>
   .bg-checkerboard {
-    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
-                      linear-gradient(-45deg, #ccc 25%, transparent 25%),
-                      linear-gradient(45deg, transparent 75%, #ccc 75%),
-                      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-image: linear-gradient(45deg, #444 25%, transparent 25%),
+                      linear-gradient(-45deg, #444 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, #444 75%),
+                      linear-gradient(-45deg, transparent 75%, #444 75%);
     background-size: 16px 16px;
     background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
   }

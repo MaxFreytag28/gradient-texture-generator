@@ -25,43 +25,45 @@
 <div class="mb-6">
   
   <div class="mb-4">
-    <label for="export-size" class="block text-sm font-medium text-gray-700 mb-2">Size</label>
+    <label for="export-size" class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Size</label>
     
     <div class="grid grid-cols-2 gap-4 mb-2">
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label for="export-width" class="block text-sm font-medium text-gray-700">Width:</label>
+          <label for="export-width" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Width:</label>
           <div class="relative w-20">
             <input 
               type="number" 
               value={exportWidth} 
               oninput={(e) => { exportWidth = Number((e.target as HTMLInputElement).value); }}
-              class="w-full py-1 px-2 text-sm border border-gray-300 rounded"
+              class="w-full py-1 px-2 text-sm rounded"
+              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
               min="32"
               max="4096"
               step="1"
               id="export-width"
             />
-            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">px</span>
+            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs theme-text-muted">px</span>
           </div>
         </div>
 
       </div>
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label for="export-height" class="block text-sm font-medium text-gray-700">Height:</label>
+          <label for="export-height" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Height:</label>
           <div class="relative w-20">
             <input 
               type="number" 
               value={exportHeight} 
               oninput={(e) => { exportHeight = Number((e.target as HTMLInputElement).value); }}
-              class="w-full py-1 px-2 text-sm border border-gray-300 rounded"
+              class="w-full py-1 px-2 text-sm rounded"
+              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
               min="32"
               max="4096"
               step="1"
               id="export-height"
             />
-            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">px</span>
+            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs theme-text-muted">px</span>
           </div>
         </div>
 
@@ -72,7 +74,8 @@
       {#each presetSizes as preset}
         <button 
           type="button"
-          class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+          class="px-2 py-1 text-xs rounded"
+          style="background-color: var(--color-bg-tertiary); color: var(--color-text-secondary); border: 1px solid var(--color-border-primary);"
           onclick={() => setPresetSize(preset.width, preset.height)}
         >{preset.label}</button>
       {/each}
@@ -80,11 +83,12 @@
   </div>
   
   <div class="mb-4">
-    <label for="export-format" class="block text-sm font-medium text-gray-700 mb-2">Format</label>
+    <label for="export-format" class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Format</label>
     <select 
       id="export-format" 
       bind:value={exportFormat} 
-      class="w-full p-2 border border-gray-300 rounded"
+      class="w-full p-2 rounded"
+      style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
     >
       <option value="png">PNG</option>
       <option value="jpeg">JPEG</option>
@@ -95,7 +99,8 @@
   <button 
     type="button" 
     onclick={onExport}
-    class="w-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded font-heading"
+    class="w-full theme-button-primary font-medium py-2 px-4 rounded font-heading"
+    style="background-color: var(--color-accent-primary); color: white; border: none;"
   >
     Export Texture
   </button>

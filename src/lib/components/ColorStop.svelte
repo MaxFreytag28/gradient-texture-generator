@@ -53,7 +53,7 @@
     <div 
       class="pill-border"
       class:selected={isSelected}
-      style={`border-color: ${isSelected ? '#3b82f6' : 'white'};`}
+      style={`border-color: ${isSelected ? 'var(--color-accent-primary)' : 'var(--color-border-secondary)'};`}
     ></div>
   </div>
   
@@ -104,8 +104,8 @@
     position: absolute;
     inset: 0;
     border-radius: 6px;
-    border: 2px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--color-border-secondary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: all 0.15s ease;
     pointer-events: none;
   }
@@ -122,11 +122,11 @@
     left: 50%;
     transform: translateX(-50%);
     margin-top: 5px;
-    background-color: white;
-    border: 1px solid #e5e7eb;
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-secondary);
     border-radius: 4px;
     padding: 2px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     width: 48px; /* Fixed width to ensure proper centering */
     text-align: center;
   }
@@ -138,6 +138,7 @@
     font-size: 12px;
     padding: 2px;
     background: transparent;
+    color: var(--color-text-primary);
     /* Remove spinner buttons */
     appearance: textfield;
     -moz-appearance: textfield;

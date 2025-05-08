@@ -121,11 +121,11 @@
   }
 </script>
 
-<hr class="my-4 border-gray-300">
+<hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;">
 
 <!-- Color swatch and hex input -->
 <div class="flex items-center space-x-2 mb-3">
-  <div class="w-10 h-10 rounded border border-gray-300 relative">
+  <div class="w-10 h-10 rounded relative" style="border: 1px solid var(--color-border-secondary);">
     <div class="absolute inset-0 bg-checkerboard rounded"></div>
     <div 
       class="absolute inset-0 rounded" 
@@ -137,7 +137,8 @@
       type="text" 
       value={localColor} 
       on:input={handleHexChange}
-      class="w-full py-1 px-2 text-sm border border-gray-300 rounded"
+      class="w-full py-1 px-2 text-sm rounded" 
+      style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
     />
   </div>
 </div>
