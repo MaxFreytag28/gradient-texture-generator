@@ -64,11 +64,16 @@
     background: transparent;
     position: relative;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.2s, background-color 0.2s;
     color: var(--color-text-secondary);
     z-index: 1;
     flex: 1;
     text-align: center;
+  }
+  
+  .toggle-option:hover:not(.active) {
+    color: var(--color-text-primary);
+    background-color: color-mix(in srgb, transparent 90%, var(--color-accent-primary));
   }
   
   .toggle-option.active {

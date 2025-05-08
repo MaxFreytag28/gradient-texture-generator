@@ -483,8 +483,8 @@
     <!-- CSS Gradient Preview -->
     <div
       bind:this={previewElement}
-      class="w-full h-full border border-gray-300 rounded-lg cursor-crosshair"
-      style="touch-action: none;"
+      class="w-full h-full rounded-lg cursor-crosshair"
+      style="touch-action: none; border: none;"
       onmousedown={handlePreviewClick}
       role="button"
       aria-label="Click to set gradient position"

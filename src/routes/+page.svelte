@@ -249,6 +249,20 @@
     }
   }
   
+  // Function to update a color stop's position directly (used by input fields)
+  function updateColorStopPosition(stopId: string, position: number) {
+    if (!stopId || !colorStopsMap[stopId]) return;
+    
+    // Update the stop position directly in the map
+    colorStopsMap = {
+      ...colorStopsMap,
+      [stopId]: {
+        ...colorStopsMap[stopId],
+        position: Math.max(0, Math.min(100, position)) // Clamp between 0 and 100
+      }
+    };
+  }
+  
   function handleColorStopDragStart(e: MouseEvent | TouchEvent, stopId: string) {
     // Set drag state
     isDraggingColorStop = true;
@@ -342,6 +356,13 @@
   
   // Export function
   function exportGradient() {
+    // Handle SVG export differently
+    if (exportFormat === 'svg') {
+      exportSvgGradient();
+      return;
+    }
+    
+    // For raster formats (PNG, JPEG, WebP)
     // Create a new canvas with the export size
     const exportCanvas = document.createElement('canvas');
     exportCanvas.width = exportWidth;
@@ -366,7 +387,9 @@
     let gradient: CanvasGradient | null = null;
     
     if (gradientType === 'linear') {
-      const radians = angle * (Math.PI / 180);
+      // Adjust the angle to match the preview (add 270 degrees or subtract 90)
+      const adjustedAngle = (angle + 270) % 360;
+      const radians = adjustedAngle * (Math.PI / 180);
       const diagonal = Math.sqrt(exportWidth * exportWidth + exportHeight * exportHeight);
       
       const centerX = exportWidth / 2;
@@ -390,8 +413,9 @@
       const x = (centerX / 100) * exportWidth;
       const y = (centerY / 100) * exportHeight;
       
-      // Convert angle to radians for conic gradient
-      const startAngle = (angle * Math.PI) / 180;
+      // Adjust the angle to match the preview (add 270 degrees or subtract 90)
+      const adjustedAngle = (angle + 270) % 360;
+      const startAngle = (adjustedAngle * Math.PI) / 180;
       
       gradient = exportCtx.createConicGradient(startAngle, x, y);
     }
@@ -416,6 +440,114 @@
     link.download = `gradient-texture.${exportFormat}`;
     link.href = dataURL;
     link.click();
+  }
+  
+  // Function to export gradient as SVG
+  function exportSvgGradient() {
+    // Sort color stops by position
+    const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+    
+    // Create SVG document
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('width', exportWidth.toString());
+    svg.setAttribute('height', exportHeight.toString());
+    svg.setAttribute('xmlns', svgNS);
+    
+    // Create defs element for gradient definition
+    const defs = document.createElementNS(svgNS, 'defs');
+    
+    // Create gradient element based on type
+    let gradientElement: SVGLinearGradientElement | SVGRadialGradientElement | null = null;
+    const gradientId = 'gradient';
+    
+    if (gradientType === 'linear') {
+      gradientElement = document.createElementNS(svgNS, 'linearGradient') as SVGLinearGradientElement;
+      gradientElement.setAttribute('id', gradientId);
+      
+      // Calculate gradient vector based on angle
+      const adjustedAngle = (angle + 270) % 360;
+      const radians = adjustedAngle * (Math.PI / 180);
+      
+      // Calculate start and end points
+      const x1 = 50 - Math.cos(radians) * 50;
+      const y1 = 50 - Math.sin(radians) * 50;
+      const x2 = 50 + Math.cos(radians) * 50;
+      const y2 = 50 + Math.sin(radians) * 50;
+      
+      // Set coordinates as percentages
+      gradientElement.setAttribute('x1', `${x1}%`);
+      gradientElement.setAttribute('y1', `${y1}%`);
+      gradientElement.setAttribute('x2', `${x2}%`);
+      gradientElement.setAttribute('y2', `${y2}%`);
+      
+    } else if (gradientType === 'radial') {
+      gradientElement = document.createElementNS(svgNS, 'radialGradient') as SVGRadialGradientElement;
+      gradientElement.setAttribute('id', gradientId);
+      
+      // Set center point
+      gradientElement.setAttribute('cx', `${centerX}%`);
+      gradientElement.setAttribute('cy', `${centerY}%`);
+      gradientElement.setAttribute('r', `${50 * radialOptions.scale}%`);
+      gradientElement.setAttribute('fx', `${centerX}%`);
+      gradientElement.setAttribute('fy', `${centerY}%`);
+      
+    } else if (gradientType === 'conic') {
+      // SVG doesn't have native conic gradients, so we'll use a workaround
+      // We'll create a linear gradient as a fallback
+      gradientElement = document.createElementNS(svgNS, 'linearGradient') as SVGLinearGradientElement;
+      gradientElement.setAttribute('id', gradientId);
+      
+      // Add a note as a comment
+      const comment = document.createComment('SVG does not support conic gradients natively. Using linear gradient as fallback.');
+      defs.appendChild(comment);
+      
+      // Set a horizontal gradient as fallback
+      gradientElement.setAttribute('x1', '0%');
+      gradientElement.setAttribute('y1', '50%');
+      gradientElement.setAttribute('x2', '100%');
+      gradientElement.setAttribute('y2', '50%');
+    }
+    
+    // Add color stops to gradient
+    if (gradientElement) {
+      sortedStops.forEach(stop => {
+        const stopElement = document.createElementNS(svgNS, 'stop');
+        stopElement.setAttribute('offset', `${stop.position}%`);
+        stopElement.setAttribute('stop-color', stop.color);
+        stopElement.setAttribute('stop-opacity', stop.alpha.toString());
+        gradientElement!.appendChild(stopElement);
+      });
+      
+      // Add gradient to defs
+      defs.appendChild(gradientElement);
+    }
+    
+    svg.appendChild(defs);
+    
+    // Create rectangle with gradient fill
+    const rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttribute('x', '0');
+    rect.setAttribute('y', '0');
+    rect.setAttribute('width', '100%');
+    rect.setAttribute('height', '100%');
+    rect.setAttribute('fill', `url(#${gradientId})`);
+    svg.appendChild(rect);
+    
+    // Convert SVG to string
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svg);
+    
+    // Create blob and download
+    const blob = new Blob([svgString], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'gradient-texture.svg';
+    link.href = url;
+    link.click();
+    
+    // Clean up
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   }
   
   // Helper function to convert hex to rgba
@@ -603,6 +735,7 @@
         onColorStopRemove={removeColorStop}
         onColorStopAdd={addColorStop}
         onColorStopDragStart={handleColorStopDragStart}
+        onColorStopPositionChange={updateColorStopPosition}
         bind:this={colorStopBarComponent}
       />
     </div>
@@ -688,7 +821,7 @@
     <!-- CSS Code Display -->
     <div class="theme-card p-6 rounded-lg gradient-border">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold theme-heading">CSS Code</h2>
+        <h2 class="text-xl font-semibold theme-heading">CSS</h2>
         <button 
           type="button"
           class="theme-button-secondary px-3 py-1 rounded text-sm flex items-center"
@@ -724,5 +857,6 @@
     top: 42px; /* Increased top spacing for better visual weight */
     color: var(--color-text-heading);
     font-weight: var(--font-weight-heading);
+    word-spacing: 0.5em;
   }
 </style>

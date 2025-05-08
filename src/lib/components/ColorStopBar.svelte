@@ -14,6 +14,7 @@
   export let onColorStopRemove: (stopId: string) => void;
   export let onColorStopAdd: (event: MouseEvent) => void;
   export let onColorStopDragStart: (event: MouseEvent | TouchEvent, stopId: string) => void;
+  export let onColorStopPositionChange: (stopId: string, position: number) => void;
   
   // Helper function to get gradient CSS
   function getGradientCSS(): string {
@@ -85,6 +86,7 @@
             onSelect={onColorStopSelect}
             onRemove={onColorStopRemove}
             onDragStart={onColorStopDragStart}
+            updateStopPosition={onColorStopPositionChange}
           />
         {/each}
       </div>
