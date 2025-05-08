@@ -676,7 +676,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Export Settings -->
     <div class="theme-card p-6 rounded-lg gradient-border">
-      <h2 class="text-xl font-semibold mb-4 theme-heading">Export Settings</h2>
+      <h2 class="text-xl font-semibold mb-4 theme-heading">Export</h2>
       <ExportSettings 
         bind:exportWidth
         bind:exportHeight
