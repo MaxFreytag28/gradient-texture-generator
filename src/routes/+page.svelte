@@ -694,7 +694,8 @@
   }
 </script>
 
-<WIPBanner />
+<!-- WIP banner disabled for production -->
+<!-- <WIPBanner /> -->
 
 <!-- Main layout with side heading -->
 <div class="relative container mx-auto px-4 py-8 max-w-6xl">
@@ -724,9 +725,6 @@
         onCenterChange={handleCenterChange}
       />
       
-      <!-- Instructions for color stop bar -->
-      <p class="text-sm mt-4 mb-2 text-center theme-text-muted">Click to add a color stop, click on a stop to edit, double-click to remove, drag to move</p>
-      
       <!-- Color Stop Bar -->
       <ColorStopBar
         {colorStops}
@@ -738,6 +736,9 @@
         onColorStopPositionChange={updateColorStopPosition}
         bind:this={colorStopBarComponent}
       />
+      
+      <!-- Instructions for color stop bar -->
+      <p class="text-sm mt-2 mb-4 text-center theme-text-muted">Click to add a color stop, drag to move, click on a stop to edit, double-click to remove.</p>
     </div>
     
     <!-- Gradient Settings -->
