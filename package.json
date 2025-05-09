@@ -34,6 +34,7 @@
 	},
 	"dependencies": {
 		"@irojs/iro-core": "^1.2.1",
-		"@jaames/iro": "^5.5.2"
+		"@jaames/iro": "^5.5.2",
+		"html2canvas": "^1.4.1"
 	}
 }

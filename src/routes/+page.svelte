@@ -371,6 +371,94 @@
     
     if (!exportCtx) return;
     
+    // Sort color stops by position
+    const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+    const colorStopsString = sortedStops.map(stop => {
+      const rgba = hexToRgba(stop.color, stop.alpha);
+      return `${rgba} ${stop.position}%`;
+    }).join(', ');
+    
+    // Create a temporary div to render the gradient exactly as CSS would
+    const tempDiv = document.createElement('div');
+    tempDiv.style.width = `${exportWidth}px`;
+    tempDiv.style.height = `${exportHeight}px`;
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '-9999px';
+    
+    // Apply the gradient based on type
+    if (gradientType === 'linear') {
+      tempDiv.style.background = `linear-gradient(${angle}deg, ${colorStopsString})`;
+    } else if (gradientType === 'radial') {
+      // Use percentage values for width and height based on scale
+      const scalePercentage = radialOptions.scale * 100;
+      tempDiv.style.background = `radial-gradient(${scalePercentage}% ${scalePercentage}% at ${centerX}% ${centerY}%, ${colorStopsString})`;
+    } else if (gradientType === 'conic') {
+      tempDiv.style.background = `conic-gradient(from ${angle}deg at ${centerX}% ${centerY}%, ${colorStopsString})`;
+    }
+    
+    // Add the div to the document so it can be rendered
+    document.body.appendChild(tempDiv);
+    
+    // Use html2canvas to capture the rendered gradient
+    // This ensures the gradient is rendered exactly as CSS would
+    import('html2canvas').then((html2canvasModule: any) => {
+      html2canvasModule.default(tempDiv, {
+        backgroundColor: null, // Transparent background
+        scale: 1,
+        logging: false,
+        width: exportWidth,
+        height: exportHeight
+      }).then((canvas: HTMLCanvasElement) => {
+        // Remove the temporary div
+        document.body.removeChild(tempDiv);
+        
+        // Draw checkerboard pattern for transparency (only for PNG and WebP)
+        if (exportFormat === 'png' || exportFormat === 'webp') {
+          const tileSize = 10;
+          const lightColor = '#f0f0f0';
+          const darkColor = '#e0e0e0';
+          
+          for (let y = 0; y < exportHeight; y += tileSize) {
+            for (let x = 0; x < exportWidth; x += tileSize) {
+              exportCtx.fillStyle = ((x / tileSize) + (y / tileSize)) % 2 === 0 ? lightColor : darkColor;
+              exportCtx.fillRect(x, y, tileSize, tileSize);
+            }
+          }
+        } else {
+          // For JPEG, fill with white background
+          exportCtx.fillStyle = '#ffffff';
+          exportCtx.fillRect(0, 0, exportWidth, exportHeight);
+        }
+        
+        // Draw the captured gradient on top
+        exportCtx.drawImage(canvas, 0, 0, exportWidth, exportHeight);
+        
+        // Convert to data URL and trigger download
+        const dataURL = exportCanvas.toDataURL(`image/${exportFormat}`);
+        const link = document.createElement('a');
+        link.download = `gradient-texture.${exportFormat}`;
+        link.href = dataURL;
+        link.click();
+      });
+    }).catch(error => {
+      console.error('Error exporting gradient:', error);
+      
+      // Fallback to the original method if html2canvas fails
+      exportGradientFallback();
+    });
+  }
+  
+  // Fallback export function using the original canvas-based approach
+  function exportGradientFallback() {
+    // Create a new canvas with the export size
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = exportWidth;
+    exportCanvas.height = exportHeight;
+    const exportCtx = exportCanvas.getContext('2d');
+    
+    if (!exportCtx) return;
+    
     // Draw checkerboard pattern for transparency
     const tileSize = 10;
     const lightColor = '#f0f0f0';
@@ -387,10 +475,10 @@
     let gradient: CanvasGradient | null = null;
     
     if (gradientType === 'linear') {
-      // Adjust the angle to match the preview (add 270 degrees or subtract 90)
+      // For linear gradients, use the full diagonal to ensure the gradient covers the entire canvas
       const adjustedAngle = (angle + 270) % 360;
       const radians = adjustedAngle * (Math.PI / 180);
-      const diagonal = Math.sqrt(exportWidth * exportWidth + exportHeight * exportHeight);
+      const diagonal = Math.sqrt(exportWidth * exportWidth + exportHeight * exportHeight) * 1.5; // Extend beyond canvas
       
       const centerX = exportWidth / 2;
       const centerY = exportHeight / 2;
@@ -404,16 +492,17 @@
       const x = (centerX / 100) * exportWidth;
       const y = (centerY / 100) * exportHeight;
       
-      // Apply scaling if provided
+      // Apply scaling and ensure the gradient covers the entire canvas
       const scale = radialOptions.scale;
-      const radius = Math.min(exportWidth, exportHeight) / 2 * scale;
+      const maxDimension = Math.max(exportWidth, exportHeight);
+      const radius = maxDimension * scale; // Use the maximum dimension to ensure coverage
       
       gradient = exportCtx.createRadialGradient(x, y, 0, x, y, radius);
     } else if (gradientType === 'conic') {
       const x = (centerX / 100) * exportWidth;
       const y = (centerY / 100) * exportHeight;
       
-      // Adjust the angle to match the preview (add 270 degrees or subtract 90)
+      // Adjust the angle to match the preview
       const adjustedAngle = (angle + 270) % 360;
       const startAngle = (adjustedAngle * Math.PI) / 180;
       
