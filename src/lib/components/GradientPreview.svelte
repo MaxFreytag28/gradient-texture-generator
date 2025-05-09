@@ -29,8 +29,15 @@
   let angleHandleX = $state(0);
   let angleHandleY = $state(0);
   
-  // Preview element
+  // Preview element and dimensions
   let previewElement: HTMLDivElement;
+  let previewWidth = $state(0);
+  let previewHeight = $state(0);
+  let lineLength = $state(0); // Dynamic line length
+  
+  // Derived state for template use
+  let displayWidth = $derived(previewWidth || props.previewSize || 512);
+  let displayHeight = $derived(previewHeight || props.previewSize || 512);
   
   // Watch for prop changes to update local state
   $effect(() => {
@@ -54,11 +61,45 @@
   onMount(() => {
     updateHandlePosition();
     updateGradientCSS();
+    
+    // Set up resize observer to update dimensions when the preview element changes size
+    if (previewElement) {
+      const resizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          previewWidth = width;
+          previewHeight = height;
+          // Calculate line length as 20% of the smaller dimension
+          lineLength = Math.min(width, height) * 0.2;
+          // Update handle positions with the new dimensions
+          updateHandlePosition();
+        }
+      });
+      
+      resizeObserver.observe(previewElement);
+      
+      // Initial calculation
+      const rect = previewElement.getBoundingClientRect();
+      previewWidth = rect.width;
+      previewHeight = rect.height;
+      lineLength = Math.min(previewWidth, previewHeight) * 0.2;
+      updateHandlePosition();
+      
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
   });
   
   // Update handle position based on angle or center
   function updateHandlePosition() {
-    const displaySize = props.previewSize || 512;
+    // Use actual preview dimensions if available, otherwise fall back to props.previewSize
+    const displayWidth = previewWidth || props.previewSize || 512;
+    const displayHeight = previewHeight || props.previewSize || 512;
+    const displaySize = Math.min(displayWidth, displayHeight);
+    
+    // Use dynamic line length if available, otherwise calculate it
+    const dynamicLineLength = lineLength || displaySize * 0.2;
     
     if (props.gradientType === 'linear') {
       // Calculate handle position based on CSS angle convention
@@ -66,26 +107,24 @@
       // Rotate 90 degrees counterclockwise by adding 270 degrees (or subtracting 90)
       const adjustedAngle = (localAngle + 270) % 360;
       const radians = adjustedAngle * (Math.PI / 180);
-      const lineLength = displaySize * 0.2; // Fixed line length - 20% of the display size for handle position
-      handleX = displaySize / 2 + Math.cos(radians) * lineLength;
-      handleY = displaySize / 2 + Math.sin(radians) * lineLength;
+      handleX = displayWidth / 2 + Math.cos(radians) * dynamicLineLength;
+      handleY = displayHeight / 2 + Math.sin(radians) * dynamicLineLength;
     } else if (props.gradientType === 'radial') {
       // For radial gradients, handle represents center
-      handleX = (localCenterX / 100) * displaySize;
-      handleY = (localCenterY / 100) * displaySize;
+      handleX = (localCenterX / 100) * displayWidth;
+      handleY = (localCenterY / 100) * displayHeight;
     } else if (props.gradientType === 'conic') {
       // For conic gradients, we have two handles:
       // 1. Center handle for position
-      handleX = (localCenterX / 100) * displaySize;
-      handleY = (localCenterY / 100) * displaySize;
+      handleX = (localCenterX / 100) * displayWidth;
+      handleY = (localCenterY / 100) * displayHeight;
       
       // 2. Angle handle for rotation
       // Rotate 90 degrees counterclockwise by adding 270 degrees (or subtracting 90)
       const adjustedAngle = (localAngle + 270) % 360;
       const radians = adjustedAngle * (Math.PI / 180);
-      const lineLength = displaySize * 0.2; // Fixed line length - 20% of the display size for handle position
-      angleHandleX = handleX + Math.cos(radians) * lineLength;
-      angleHandleY = handleY + Math.sin(radians) * lineLength;
+      angleHandleX = handleX + Math.cos(radians) * dynamicLineLength;
+      angleHandleY = handleY + Math.sin(radians) * dynamicLineLength;
     }
   }
   
@@ -123,6 +162,7 @@
   // Update gradient CSS
   function updateGradientCSS() {
     if (!previewElement) return;
+    
     // Apply the gradient on top of the transparency checkerboard
     const checkerboard = "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==')";
     previewElement.style.backgroundImage = `${getGradientCSS()}, ${checkerboard}`;
@@ -494,8 +534,8 @@
         style="
           left: 50%; 
           top: 50%; 
-          width: {(props.previewSize || 512) * 0.3 - 24}px; 
-          height: 1px; 
+          width: {lineLength}px; 
+          height: 2px; 
           background-color: rgba(0, 0, 0, 0.3);
           transform: rotate({(localAngle + 270) % 360}deg);
           transform-origin: left center;
@@ -508,8 +548,8 @@
         style="
           left: {(localCenterX / 100) * 100}%; 
           top: {(localCenterY / 100) * 100}%; 
-          width: {(props.previewSize || 512) * 0.3 - 24}px; 
-          height: 1px; 
+          width: {lineLength}px; 
+          height: 2px; 
           background-color: rgba(0, 0, 0, 0.3);
           transform: rotate({(localAngle + 270) % 360}deg);
           transform-origin: left center;
@@ -520,11 +560,12 @@
     <!-- Gradient Handle Overlay -->
     <div 
       id="gradient-handle"
-      class="absolute w-[20px] h-[20px] rounded-full bg-transparent cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
+      class="absolute w-[20px] h-[20px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
       style="
-        left: {handleX / (props.previewSize || 512) * 100}%; 
-        top: {handleY / (props.previewSize || 512) * 100}%; 
+        left: {handleX / displayWidth * 100}%; 
+        top: {handleY / displayHeight * 100}%; 
         border: 2px solid rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.3);
       "
       tabindex="0"
       role="slider"
@@ -542,11 +583,12 @@
     {#if props.gradientType === 'conic'}
       <div 
         id="angle-handle"
-        class="absolute w-[20px] h-[20px] rounded-full bg-transparent cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
+        class="absolute w-[20px] h-[20px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
         style="
-          left: {angleHandleX / (props.previewSize || 512) * 100}%; 
-          top: {angleHandleY / (props.previewSize || 512) * 100}%; 
+          left: {angleHandleX / displayWidth * 100}%; 
+          top: {angleHandleY / displayHeight * 100}%; 
           border: 2px solid rgba(0, 0, 0, 0.3);
+          background-color: rgba(255, 255, 255, 0.3);
         "
         tabindex="0"
         role="slider"
