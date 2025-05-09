@@ -19,7 +19,7 @@
   let angle = $state(90);
   let centerX = $state(50);
   let centerY = $state(50);
-  let isSnappingEnabled = $state(false);
+  let isSnappingEnabled = $state(true); // Enable snapping to 5 degrees by default
   
   // Radial gradient options
   let radialOptions = $state<RadialGradientOptions>({

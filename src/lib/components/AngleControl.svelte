@@ -7,7 +7,7 @@
   }>();
   
   // Local state
-  let snapToGrid = $state(false);
+  let snapToGrid = $state(true); // Enable snapping to 5 degrees by default
   
   // Local state to track angle changes
   let localAngle = $state(props.angle);

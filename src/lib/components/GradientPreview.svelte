@@ -233,22 +233,24 @@
     const clampedX = Math.max(0, Math.min(rect.width, x));
     const clampedY = Math.max(0, Math.min(rect.height, y));
     
-    // Convert to preview coordinates
-    const size = props.previewSize || 512;
+    // Convert to preview coordinates using actual dimensions
+    // Use actual preview dimensions if available, otherwise fall back to props.previewSize
+    const actualWidth = previewWidth || props.previewSize || 512;
+    const actualHeight = previewHeight || props.previewSize || 512;
     
     if (isDraggingHandle) {
-      handleX = (clampedX / rect.width) * size;
-      handleY = (clampedY / rect.height) * size;
+      handleX = (clampedX / rect.width) * actualWidth;
+      handleY = (clampedY / rect.height) * actualHeight;
     } else if (isDraggingAngleHandle) {
       // For angle handle, we're only updating the angle handle position
-      angleHandleX = (clampedX / rect.width) * size;
-      angleHandleY = (clampedY / rect.height) * size;
+      angleHandleX = (clampedX / rect.width) * actualWidth;
+      angleHandleY = (clampedY / rect.height) * actualHeight;
     }
     
     if (props.gradientType === 'linear') {
       // Calculate angle based on handle position relative to center
-      const dx = handleX - size / 2;
-      const dy = handleY - size / 2;
+      const dx = handleX - actualWidth / 2;
+      const dy = handleY - actualHeight / 2;
       
       // Calculate angle in radians and convert to degrees
       let angle = Math.atan2(dy, dx) * (180 / Math.PI);
@@ -270,8 +272,8 @@
     } else if (props.gradientType === 'radial') {
       // For radial gradients, set center directly
       // Round to one decimal place
-      localCenterX = Math.round((handleX / size) * 1000) / 10;
-      localCenterY = Math.round((handleY / size) * 1000) / 10;
+      localCenterX = Math.round((handleX / actualWidth) * 1000) / 10;
+      localCenterY = Math.round((handleY / actualHeight) * 1000) / 10;
       
       // Notify parent component
       props.onCenterChange(localCenterX, localCenterY);
@@ -279,12 +281,12 @@
       if (isDraggingHandle) {
         // When dragging the center handle, update the center position
         // Round to one decimal place
-        localCenterX = Math.round((handleX / size) * 1000) / 10;
-        localCenterY = Math.round((handleY / size) * 1000) / 10;
+        localCenterX = Math.round((handleX / actualWidth) * 1000) / 10;
+        localCenterY = Math.round((handleY / actualHeight) * 1000) / 10;
         
         // Update angle handle position based on new center
         const radians = localAngle * (Math.PI / 180);
-        const lineLength = size * 0.2;
+        const lineLength = Math.min(actualWidth, actualHeight) * 0.2;
         angleHandleX = handleX + Math.cos(radians) * lineLength;
         angleHandleY = handleY + Math.sin(radians) * lineLength;
         
@@ -438,16 +440,17 @@
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    // Convert to preview coordinates
-    const size = props.previewSize || 512;
-    handleX = (x / rect.width) * size;
-    handleY = (y / rect.height) * size;
+    // Convert to preview coordinates using actual dimensions
+    const actualWidth = previewWidth || props.previewSize || 512;
+    const actualHeight = previewHeight || props.previewSize || 512;
+    handleX = (x / rect.width) * actualWidth;
+    handleY = (y / rect.height) * actualHeight;
     
     if (props.gradientType === 'linear' || props.gradientType === 'conic') {
       // Calculate angle based on handle position relative to center
       // For conic, we use the center of the preview as reference point
-      const centerX = props.gradientType === 'linear' ? size / 2 : (localCenterX / 100) * size;
-      const centerY = props.gradientType === 'linear' ? size / 2 : (localCenterY / 100) * size;
+      const centerX = props.gradientType === 'linear' ? actualWidth / 2 : (localCenterX / 100) * actualWidth;
+      const centerY = props.gradientType === 'linear' ? actualHeight / 2 : (localCenterY / 100) * actualHeight;
       
       const dx = handleX - centerX;
       const dy = handleY - centerY;
@@ -467,9 +470,9 @@
       if (props.gradientType === 'conic') {
         // Update only the angle handle position
         const radians = ((localAngle + 270) % 360) * (Math.PI / 180);
-        const lineLength = size * 0.2;
-        angleHandleX = (localCenterX / 100) * size + Math.cos(radians) * lineLength;
-        angleHandleY = (localCenterY / 100) * size + Math.sin(radians) * lineLength;
+        const lineLength = Math.min(actualWidth, actualHeight) * 0.2;
+        angleHandleX = (localCenterX / 100) * actualWidth + Math.cos(radians) * lineLength;
+        angleHandleY = (localCenterY / 100) * actualHeight + Math.sin(radians) * lineLength;
         
         // Start dragging the angle handle immediately
         isDraggingAngleHandle = true;
@@ -480,8 +483,8 @@
     } else if (props.gradientType === 'radial') {
       // For radial gradients, set center directly
       // Round to one decimal place
-      localCenterX = Math.round((handleX / size) * 1000) / 10;
-      localCenterY = Math.round((handleY / size) * 1000) / 10;
+      localCenterX = Math.round((handleX / actualWidth) * 1000) / 10;
+      localCenterY = Math.round((handleY / actualHeight) * 1000) / 10;
       props.onCenterChange(localCenterX, localCenterY);
       
       // Start dragging the center handle immediately
