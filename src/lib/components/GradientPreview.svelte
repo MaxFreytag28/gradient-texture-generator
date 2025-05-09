@@ -105,16 +105,12 @@
       // This matches the behavior in the main component
       return `linear-gradient(${localAngle}deg, ${colorStopsString})`;
     } else if (props.gradientType === 'radial') {
-      // For radial gradients, we need to handle the scale
+      // For radial gradients, use percentage values for width and height based on scale
       const scale = props.radialOptions?.scale || 1.0;
+      const scalePercentage = scale * 100;
       
-      // Only include size if scale is not 1.0 (100%)
-      let sizeStr = '';
-      if (scale !== 1.0) {
-        sizeStr = ` ${scale * 100}%`;
-      }
-      
-      return `radial-gradient(circle${sizeStr} at ${localCenterX}% ${localCenterY}%, ${colorStopsString})`;
+      // Use percentage values for both width and height
+      return `radial-gradient(${scalePercentage}% ${scalePercentage}% at ${localCenterX}% ${localCenterY}%, ${colorStopsString})`;
     } else if (props.gradientType === 'conic') {
       // Use the angle directly for conic gradients
       // This matches the behavior in the main component

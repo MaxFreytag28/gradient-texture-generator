@@ -119,6 +119,34 @@
       notifyChange();
     }
   }
+  
+  // Copy color to clipboard
+  function copyColorToClipboard() {
+    navigator.clipboard.writeText(localColor)
+      .then(() => {
+        console.log('Color copied to clipboard');
+      })
+      .catch(err => {
+        console.error('Could not copy color: ', err);
+      });
+  }
+  
+  // Paste color from clipboard
+  async function pasteColorFromClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      // Simple validation to check if it's a hex color
+      if (/^#[0-9A-Fa-f]{6}$/.test(text)) {
+        localColor = text;
+        if (colorPicker) {
+          colorPicker.color.hexString = localColor;
+        }
+        notifyChange();
+      }
+    } catch (err) {
+      console.error('Could not paste color: ', err);
+    }
+  }
 </script>
 
 <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;">
@@ -132,14 +160,38 @@
       style="background-color: {localColor}; opacity: {localAlpha};"
     ></div>
   </div>
-  <div class="flex-1">
+  <div class="flex-1 flex items-center space-x-1">
     <input 
       type="text" 
       value={localColor} 
       on:input={handleHexChange}
-      class="w-full py-1 px-2 text-sm rounded" 
+      class="flex-1 py-1 px-2 text-sm rounded h-8" 
       style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
     />
+    <!-- Copy button -->
+    <button 
+      type="button"
+      class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+      title="Copy color"
+      aria-label="Copy color to clipboard"
+      on:click={copyColorToClipboard}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+      </svg>
+    </button>
+    <!-- Paste button -->
+    <button 
+      type="button"
+      class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+      title="Paste color"
+      aria-label="Paste color from clipboard"
+      on:click={pasteColorFromClipboard}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+    </button>
   </div>
 </div>
 
@@ -159,6 +211,8 @@
     background-size: 16px 16px;
     background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
   }
+  
+  /* Using theme-button-secondary class from theme.css for consistent button styling */
   
   /* Override iro.js styles for better visibility */
   :global(.IroSlider) {

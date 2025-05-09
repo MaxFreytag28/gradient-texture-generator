@@ -598,13 +598,9 @@
       // Apply scaling if provided (convert scale to percentage of the size)
       const scale = radialOptions.scale;
       
-      // Use circle with size if scale is not 1.0 (100%)
-      if (scale !== 1.0) {
-        // For radial gradients, we use a percentage of the container size
-        return `background: radial-gradient(circle at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
-      } else {
-        return `background: radial-gradient(circle at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
-      }
+      // Use percentage values for width and height based on scale
+      const scalePercentage = (scale * 100).toFixed(0);
+      return `background: radial-gradient(${scalePercentage}% ${scalePercentage}% at ${formattedCenterX}% ${formattedCenterY}%, ${colorStopsString});`;
     } else if (gradientType === 'conic') {
       // Format center position and angle to max 2 decimal places
       const formattedCenterX = centerX.toFixed(2).replace(/\.?0+$/, '');
@@ -645,10 +641,10 @@
       // In CSS: 0deg = bottom to top, 90deg = left to right
       gradientCSS = `linear-gradient(${angle}deg, ${colorStopsString})`;
     } else if (gradientType === 'radial') {
-      // For radial gradients with scaling, we need to adjust the implementation
-      // CSS radial gradients can use a size keyword or length, but it's complex to calculate
-      // For now, we'll use the circle shape with the center position
-      gradientCSS = `radial-gradient(circle at ${centerX}% ${centerY}%, ${colorStopsString})`;
+      // For radial gradients with scaling, use percentage values for width and height
+      // This allows the gradient to be scaled properly
+      const scalePercentage = radialOptions.scale * 100;
+      gradientCSS = `radial-gradient(${scalePercentage}% ${scalePercentage}% at ${centerX}% ${centerY}%, ${colorStopsString})`;
     } else if (gradientType === 'conic') {
       gradientCSS = `conic-gradient(from ${angle}deg at ${centerX}% ${centerY}%, ${colorStopsString})`;
     }
