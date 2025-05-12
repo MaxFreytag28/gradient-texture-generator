@@ -6,21 +6,22 @@
 
 <svelte:head>
 	<!-- Primary Meta Tags -->
-	<title>MakeGradients.app | Create & Export Custom CSS Gradients</title>
-	<meta name="description" content="Create beautiful linear and radial gradients with an intuitive visual editor. Export as CSS, SVG, or PNG for your web design projects.">
+	<title>MakeGradients.app | Generate & Export Custom Web Gradients</title>
+	<meta name="description" content="Create stunning linear, radial, and conic gradients in your browser. Export them as CSS, SVG, or PNG for your UI, code, or design work.">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 	
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://makegradients.app/">
-	<meta property="og:title" content="MakeGradients.app | Create & Export Custom CSS Gradients">
-	<meta property="og:description" content="Create beautiful linear and radial gradients with an intuitive visual editor. Export as CSS, SVG, or PNG for your web design projects.">
+	<meta property="og:title" content="MakeGradients.app | Generate & Export Custom Web Gradients">
+	<meta property="og:description" content="Create stunning linear, radial, and conic gradients in your browser. Export them as CSS, SVG, or PNG for your UI, code, or design work.">
 	<meta property="og:image" content="https://makegradients.app/images/gradient-preview-social.png">
 	
 	<!-- Twitter -->
 	<meta property="twitter:card" content="summary_large_image">
 	<meta property="twitter:url" content="https://makegradients.app/">
-	<meta property="twitter:title" content="MakeGradients.app | Create & Export Custom CSS Gradients">
-	<meta property="twitter:description" content="Create beautiful linear and radial gradients with an intuitive visual editor. Export as CSS, SVG, or PNG for your web design projects.">
+	<meta property="twitter:title" content="MakeGradients.app | Generate & Export Custom Web Gradients">
+	<meta property="twitter:description" content="Create stunning linear, radial, and conic gradients in your browser. Export them as CSS, SVG, or PNG for your UI, code, or design work.">
 	<meta property="twitter:image" content="https://makegradients.app/images/gradient-preview-social.png">
 	
 	<!-- Fonts -->
