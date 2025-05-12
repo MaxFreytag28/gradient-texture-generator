@@ -5,6 +5,25 @@
 </script>
 
 <svelte:head>
+	<!-- Primary Meta Tags -->
+	<title>MakeGradients.app | Create & Export Custom CSS Gradients</title>
+	<meta name="description" content="Create beautiful linear and radial gradients with an intuitive visual editor. Export as CSS, SVG, or PNG for your web design projects.">
+	
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://makegradients.app/">
+	<meta property="og:title" content="MakeGradients.app | Create & Export Custom CSS Gradients">
+	<meta property="og:description" content="Create beautiful linear and radial gradients with an intuitive visual editor. Export as CSS, SVG, or PNG for your web design projects.">
+	<meta property="og:image" content="https://makegradients.app/images/gradient-preview-social.png">
+	
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image">
+	<meta property="twitter:url" content="https://makegradients.app/">
+	<meta property="twitter:title" content="MakeGradients.app | Create & Export Custom CSS Gradients">
+	<meta property="twitter:description" content="Create beautiful linear and radial gradients with an intuitive visual editor. Export as CSS, SVG, or PNG for your web design projects.">
+	<meta property="twitter:image" content="https://makegradients.app/images/gradient-preview-social.png">
+	
+	<!-- Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 	<!-- Urbanist from Google Fonts -->

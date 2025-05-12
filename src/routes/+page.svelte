@@ -786,11 +786,11 @@
 <div class="relative container mx-auto px-4 py-8 max-w-6xl">
   <!-- Side heading (vertical text) -->
   <div class="absolute left-0 top-0 bottom-0 flex items-start">
-    <h1 class="vertical-text text-5xl theme-heading whitespace-nowrap">GRADIENT TEXTURE GENERATOR</h1>
+    <h1 class="vertical-text text-5xl theme-heading whitespace-nowrap">MAKE GRADIENTS</h1>
   </div>
   
   <!-- Hidden heading for accessibility/SEO -->
-  <h1 class="sr-only">Gradient Texture Generator</h1>
+  <h1 class="sr-only">Make Gradients</h1>
   
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Gradient Preview -->
