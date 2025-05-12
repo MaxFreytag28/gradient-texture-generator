@@ -883,11 +883,11 @@
         }}
       />
       
-      <!-- Separator line -->
-      <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;">
+      <!-- Separator line (temporarily hidden) -->
+      <!-- <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;"> -->
       
-      <!-- Advertisement Placeholder -->
-      <AdvertisementPlaceholder />
+      <!-- Advertisement Placeholder (temporarily hidden) -->
+      <!-- <AdvertisementPlaceholder /> -->
     </div>
   </div>
   
