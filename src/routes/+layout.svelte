@@ -8,7 +8,7 @@
 	<!-- Primary Meta Tags -->
 	<title>MakeGradients.app | Generate & Export Custom Web Gradients</title>
 	<meta name="description" content="Create stunning linear, radial, and conic gradients in your browser. Export them as CSS, SVG, or PNG for your UI, code, or design work.">
-	<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 	
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">

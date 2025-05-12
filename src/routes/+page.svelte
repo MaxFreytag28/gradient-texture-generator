@@ -789,6 +789,9 @@
     <h1 class="vertical-text text-5xl theme-heading whitespace-nowrap">MAKE GRADIENTS</h1>
   </div>
   
+  <!-- Hidden heading for accessibility/SEO -->
+  <h1 class="sr-only">Make Gradients</h1>
+  
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Gradient Preview -->
     <div class="lg:col-span-2 theme-card p-6 rounded-lg gradient-border">
@@ -880,11 +883,11 @@
         }}
       />
       
-      <!-- Separator line - Hidden for now -->
-      <!-- <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;"> -->
+      <!-- Separator line -->
+      <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;">
       
-      <!-- Advertisement Placeholder - Hidden for now -->
-      <!-- <AdvertisementPlaceholder /> -->
+      <!-- Advertisement Placeholder -->
+      <AdvertisementPlaceholder />
     </div>
   </div>
   
