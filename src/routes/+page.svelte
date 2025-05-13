@@ -790,7 +790,7 @@
   </div>
   
   <!-- Hidden heading for accessibility/SEO -->
-  <h1 class="sr-only">Make Gradients</h1>
+  <!-- <h1 class="sr-only">Make Gradients</h1> -->
   
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Gradient Preview -->
