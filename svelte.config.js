@@ -5,11 +5,12 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter({
-			// Enable edge runtime for better performance
 			runtime: 'nodejs22.x',
-			// Ensure CSS is processed correctly
-			speedInsights: true
-		})
+			speedInsights: true,
+		}),
+		paths: {
+			base: ''
+		}
 	}
 };
 
