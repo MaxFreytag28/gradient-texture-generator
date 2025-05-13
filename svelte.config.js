@@ -6,7 +6,7 @@ const config = {
 	kit: {
 		adapter: adapter({
 			// Enable edge runtime for better performance
-			runtime: 'nodejs18.x',
+			runtime: 'nodejs22.x',
 			// Ensure CSS is processed correctly
 			speedInsights: true
 		})
