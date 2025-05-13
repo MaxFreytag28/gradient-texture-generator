@@ -2,6 +2,9 @@
 	import '../app.css';
 	import '$lib/styles/fonts.css';
 	import '$lib/styles/theme.css';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+
+	injectSpeedInsights();
 </script>
 
 <svelte:head>
