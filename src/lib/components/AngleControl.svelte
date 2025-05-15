@@ -52,6 +52,7 @@
     <label for="angle-input" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Angle:</label>
     <div class="relative w-20">
       <input 
+        id="angle-input"
         type="number" 
         value={localAngle.toFixed(1)} 
         oninput={handleInput}
@@ -75,6 +76,7 @@
     <label for="angle-snap-to-grid" class="text-sm" style="color: var(--color-text-secondary);">Snap to 5° increments</label>
   </div>
   
+  <label for="angle-slider" class="sr-only">Angle slider</label>
   <input 
     type="range" 
     min="0" 
@@ -84,6 +86,8 @@
     oninput={handleSliderInput}
     class="w-full h-2 rounded-lg appearance-none cursor-pointer"
     style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
-    id="angle-input"
+    id="angle-slider"
+    aria-label="Angle slider"
+    title="Drag to adjust gradient angle"
   >
 </div>

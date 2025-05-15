@@ -29,7 +29,7 @@
     <!-- Column 1: Size inputs and Format -->
     <div>
       <!-- Size inputs -->
-      <label for="export-size" class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Size</label>
+      <div class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Size</div>
       
       <div class="grid grid-cols-2 gap-2 mb-3">
         <div>

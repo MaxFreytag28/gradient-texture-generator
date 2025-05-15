@@ -792,9 +792,9 @@
   <!-- Hidden heading for accessibility/SEO -->
   <!-- <h1 class="sr-only">Make Gradients</h1> -->
   
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
     <!-- Gradient Preview -->
-    <div class="lg:col-span-2 theme-card p-6 rounded-lg gradient-border">
+    <div class="lg:col-span-2 theme-card p-4 rounded-lg gradient-border">
       <h2 class="text-xl mb-4 theme-heading">Preview</h2>
       
       <GradientPreview 
@@ -827,7 +827,7 @@
     </div>
     
     <!-- Gradient Settings -->
-    <div class="theme-card p-6 rounded-lg gradient-border">
+    <div class="theme-card p-4 rounded-lg gradient-border">
       <h2 class="text-xl mb-4 theme-heading">Settings</h2>
       <!-- Gradient Type -->
       <div class="mb-4">
@@ -876,6 +876,8 @@
       <!-- Selected Color Stop Controls -->
       <ColorPicker 
         selectedStop={colorPickerStop}
+        colorStops={colorStops}
+        onColorStopSelect={selectColorStop}
         onColorChange={(updatedStop) => {
           if (selectedStop) {
             updateSelectedStopProperties(updatedStop.color, updatedStop.position, updatedStop.alpha);
@@ -893,9 +895,9 @@
   </div>
   
   <!-- Export Settings and CSS Code (Horizontal) -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Export Settings -->
-    <div class="theme-card p-6 rounded-lg gradient-border">
+    <div class="theme-card p-4 rounded-lg gradient-border">
       <h2 class="text-xl font-semibold mb-4 theme-heading">Export</h2>
       <ExportSettings 
         bind:exportWidth
@@ -906,7 +908,7 @@
     </div>
     
     <!-- CSS Code Display -->
-    <div class="theme-card p-6 rounded-lg gradient-border">
+    <div class="theme-card p-4 rounded-lg gradient-border">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold theme-heading">CSS</h2>
         <button 

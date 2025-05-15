@@ -27,6 +27,7 @@
         <label for="center-x-input" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Center X:</label>
         <div class="relative w-16">
           <input 
+            id="center-x-input"
             type="number" 
             value={centerX} 
             oninput={handleXInput}
@@ -48,7 +49,9 @@
         oninput={() => onCenterChange(centerX, centerY)}
         class="w-full h-2 rounded-lg appearance-none cursor-pointer"
         style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
-        id="center-x-input"
+        id="center-x-slider"
+        aria-label="Center X position slider"
+        title="Drag to adjust horizontal center position"
       >
     </div>
     <div>
@@ -56,6 +59,7 @@
         <label for="center-y-input" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Center Y:</label>
         <div class="relative w-16">
           <input 
+            id="center-y-input"
             type="number" 
             value={centerY} 
             oninput={handleYInput}
@@ -77,7 +81,9 @@
         oninput={() => onCenterChange(centerX, centerY)}
         class="w-full h-2 rounded-lg appearance-none cursor-pointer"
         style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
-        id="center-y-input"
+        id="center-y-slider"
+        aria-label="Center Y position slider"
+        title="Drag to adjust vertical center position"
       >
     </div>
   </div>

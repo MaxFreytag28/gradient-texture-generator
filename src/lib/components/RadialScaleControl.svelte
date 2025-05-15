@@ -18,6 +18,7 @@
     <label for="scale-slider" class="block text-sm font-medium" style="color: var(--color-text-secondary);">Radius Scale</label>
     <div class="flex items-center">
       <input 
+        id="scale-number"
         type="number" 
         min="10" 
         max="200" 
@@ -45,6 +46,8 @@
     on:input={handleScaleChange}
     class="w-full h-2 rounded-lg appearance-none cursor-pointer"
     style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
+    aria-label="Radius scale slider"
+    title="Drag to adjust gradient radius scale"
   />
   <div class="flex justify-between text-xs theme-text-muted mt-1">
     <span>10%</span>

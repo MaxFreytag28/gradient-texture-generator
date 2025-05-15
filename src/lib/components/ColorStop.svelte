@@ -55,20 +55,23 @@
     <div 
       class="pill-border"
       class:selected={isSelected}
-      style={`border-color: ${isSelected ? 'var(--color-accent-primary)' : 'var(--color-border-secondary)'};`}
+      style={`border-color: ${isSelected ? 'var(--color-border-accent)' : 'var(--color-border-secondary)'};`}
     ></div>
   </button>
   
   <!-- Position value display -->
   {#if isSelected}
     <div class="position-display">
+      <label for="position-input-{stop.id}" class="sr-only">Color Stop Position</label>
       <input 
+        id="position-input-{stop.id}"
         type="number" 
         value={stop.position.toFixed(1)} 
         min="0" 
         max="100" 
         step="0.1"
         class="position-input"
+        aria-label="Color Stop Position"
         onblur={(e) => {
           // Get the input value and clamp it between 0 and 100
           const inputElement = e.target as HTMLInputElement;
