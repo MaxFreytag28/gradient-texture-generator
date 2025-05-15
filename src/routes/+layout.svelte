@@ -40,11 +40,4 @@
 	<main class="flex-grow">
 		<slot></slot>
 	</main>
-	
-	<footer class="text-center text-sm py-6 mt-8 border-t theme-text-muted" style="border-color: var(--color-border-primary); background-color: var(--color-bg-tertiary);">
-		<div class="container mx-auto px-4">
-			<a href="/legal" class="mx-2 hover:text-white" style="color: var(--color-text-secondary);">Legal Disclosure</a> · 
-			<a href="/privacy" class="mx-2 hover:text-white" style="color: var(--color-text-secondary);">Privacy Policy</a>
-		</div>
-	</footer>
 </div>
