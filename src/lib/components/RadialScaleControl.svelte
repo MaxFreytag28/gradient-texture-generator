@@ -5,11 +5,19 @@
   export let radialOptions: RadialGradientOptions;
   export let onScaleChange: (newScale: number) => void;
   
+  // Default value for reset functionality
+  const DEFAULT_SCALE = 1.0; // 100%
+  
   // Handle scale change
   function handleScaleChange(e: Event) {
     const input = e.target as HTMLInputElement;
     const newScale = parseFloat(input.value);
     onScaleChange(newScale);
+  }
+  
+  // Reset scale to default value
+  function resetScale() {
+    onScaleChange(DEFAULT_SCALE);
   }
 </script>
 
@@ -44,10 +52,11 @@
     step="0.05" 
     value={radialOptions.scale} 
     on:input={handleScaleChange}
+    on:dblclick={resetScale}
     class="w-full h-2 rounded-lg appearance-none cursor-pointer"
     style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
     aria-label="Radius scale slider"
-    title="Drag to adjust gradient radius scale"
+    title="Drag to adjust gradient radius scale, double-click to reset to 100%"
   />
   <div class="flex justify-between text-xs theme-text-muted mt-1">
     <span>10%</span>

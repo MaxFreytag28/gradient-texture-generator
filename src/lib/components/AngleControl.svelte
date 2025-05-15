@@ -6,6 +6,9 @@
     onSnapChange?: (isSnapping: boolean) => void;
   }>();
   
+  // Default value for reset functionality
+  const DEFAULT_ANGLE = 90;
+  
   // Local state
   let snapToGrid = $state(true); // Enable snapping to 5 degrees by default
   
@@ -30,6 +33,12 @@
       localAngle = Math.round(localAngle / 5) * 5;
     }
     
+    props.onAngleChange(localAngle);
+  }
+  
+  // Reset angle to default value
+  function resetAngle() {
+    localAngle = DEFAULT_ANGLE;
     props.onAngleChange(localAngle);
   }
   
@@ -84,10 +93,11 @@
     step={snapToGrid ? "5" : "1"} 
     bind:value={localAngle} 
     oninput={handleSliderInput}
+    ondblclick={resetAngle}
     class="w-full h-2 rounded-lg appearance-none cursor-pointer"
     style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
     id="angle-slider"
     aria-label="Angle slider"
-    title="Drag to adjust gradient angle"
+    title="Drag to adjust gradient angle, double-click to reset to 90°"
   >
 </div>

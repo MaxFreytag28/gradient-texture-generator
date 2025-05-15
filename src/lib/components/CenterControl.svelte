@@ -3,6 +3,10 @@
   export let centerX: number;
   export let centerY: number;
   
+  // Default values for reset functionality
+  const DEFAULT_CENTER_X = 50;
+  const DEFAULT_CENTER_Y = 50;
+  
   // Events
   export let onCenterChange: (x: number, y: number) => void;
   
@@ -15,6 +19,25 @@
   function handleYInput(e: Event) {
     const value = Number((e.target as HTMLInputElement).value);
     centerY = value;
+    onCenterChange(centerX, centerY);
+  }
+  
+  // Reset center X to default value
+  function resetCenterX() {
+    centerX = DEFAULT_CENTER_X;
+    onCenterChange(centerX, centerY);
+  }
+  
+  // Reset center Y to default value
+  function resetCenterY() {
+    centerY = DEFAULT_CENTER_Y;
+    onCenterChange(centerX, centerY);
+  }
+  
+  // Reset both X and Y to default values
+  function resetCenter() {
+    centerX = DEFAULT_CENTER_X;
+    centerY = DEFAULT_CENTER_Y;
     onCenterChange(centerX, centerY);
   }
 </script>
@@ -47,11 +70,12 @@
         step="0.1" 
         bind:value={centerX} 
         oninput={() => onCenterChange(centerX, centerY)}
+        ondblclick={resetCenterX}
         class="w-full h-2 rounded-lg appearance-none cursor-pointer"
         style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
         id="center-x-slider"
         aria-label="Center X position slider"
-        title="Drag to adjust horizontal center position"
+        title="Drag to adjust horizontal center position, double-click to reset to 50%"
       >
     </div>
     <div>
@@ -79,11 +103,12 @@
         step="0.1" 
         bind:value={centerY} 
         oninput={() => onCenterChange(centerX, centerY)}
+        ondblclick={resetCenterY}
         class="w-full h-2 rounded-lg appearance-none cursor-pointer"
         style="background-color: var(--color-bg-tertiary); accent-color: var(--color-accent-primary);"
         id="center-y-slider"
         aria-label="Center Y position slider"
-        title="Drag to adjust vertical center position"
+        title="Drag to adjust vertical center position, double-click to reset to 50%"
       >
     </div>
   </div>
