@@ -137,7 +137,7 @@
   .position-display {
     position: absolute;
     top: 100%;
-    left: 50%;
+    left: 0;
     transform: translateX(-50%);
     margin-top: 5px;
     background-color: var(--color-bg-tertiary);

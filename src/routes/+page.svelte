@@ -13,6 +13,7 @@
   import RadialScaleControl from '$lib/components/RadialScaleControl.svelte';
   import ExportSettings from '$lib/components/ExportSettings.svelte';
   import AdvertisementPlaceholder from '$lib/components/AdvertisementPlaceholder.svelte';
+  import GradientPresets from '$lib/components/GradientPresets.svelte';
   
   // Gradient properties
   let gradientType = $state<GradientType>('linear');
@@ -105,7 +106,7 @@
   
   // Component references
   let colorStopBarComponent: any;
-  const previewSize = 512;
+  const previewSize = 400; // Set to 400px
   
   // Update the gradient border when any gradient property changes
   $effect(() => {
@@ -352,6 +353,64 @@
     const b = Math.round(b1 + (b2 - b1) * ratio);
     
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  }
+  
+  // Handle preset selection
+  function handlePresetSelect(event: CustomEvent<{
+    id: string;
+    name: string;
+    gradientType: GradientType;
+    angle?: number;
+    centerX?: number;
+    centerY?: number;
+    radialOptions?: RadialGradientOptions;
+    colorStops: ColorStop[];
+  }>) {
+    const preset = event.detail;
+    
+    // Update gradient type
+    gradientType = preset.gradientType;
+    
+    // Update angle or center based on gradient type
+    if (preset.gradientType === 'linear' || preset.gradientType === 'conic') {
+      if (preset.angle !== undefined) {
+        angle = preset.angle;
+      }
+    }
+    
+    if (preset.gradientType === 'radial' || preset.gradientType === 'conic') {
+      if (preset.centerX !== undefined) {
+        centerX = preset.centerX;
+      }
+      if (preset.centerY !== undefined) {
+        centerY = preset.centerY;
+      }
+    }
+    
+    // Update radial options if applicable
+    if (preset.gradientType === 'radial' && preset.radialOptions) {
+      radialOptions = preset.radialOptions;
+    }
+    
+    // Update color stops - create new stops with unique IDs
+    const newStopsMap: Record<string, ColorStop> = {};
+    preset.colorStops.forEach(stop => {
+      const newId = generateId();
+      newStopsMap[newId] = {
+        id: newId,
+        color: stop.color,
+        position: stop.position,
+        alpha: stop.alpha
+      };
+    });
+    
+    colorStopsMap = newStopsMap;
+    
+    // Select the first stop
+    const firstStopId = Object.keys(newStopsMap)[0];
+    if (firstStopId) {
+      selectedStopId = firstStopId;
+    }
   }
   
   // Export function
@@ -789,45 +848,46 @@
     <h1 class="vertical-text text-5xl theme-heading whitespace-nowrap">MAKE GRADIENTS</h1>
   </div>
   
-  <!-- Hidden heading for accessibility/SEO -->
-  <!-- <h1 class="sr-only">Make Gradients</h1> -->
-  
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+  <div class="flex flex-col lg:flex-row gap-4 mb-4 justify-center">
     <!-- Gradient Preview -->
-    <div class="lg:col-span-2 theme-card p-4 rounded-lg gradient-border">
-      <h2 class="text-xl mb-4 theme-heading">Preview</h2>
-      
-      <GradientPreview 
-        {gradientType}
-        {angle}
-        {centerX}
-        {centerY}
-        {colorStops}
-        {previewSize}
-        {isSnappingEnabled}
-        radialOptions={radialOptions}
-        onAngleChange={handleAngleChange}
-        onCenterChange={handleCenterChange}
-      />
+    <div class="theme-card p-4 rounded-lg gradient-border flex-1 flex-col items-center w-auto">
+      <div class="w-full aspect-square">
+        <GradientPreview 
+          {gradientType}
+          {angle}
+          {centerX}
+          {centerY}
+          {colorStops}
+          {radialOptions}
+          {previewSize}
+          onAngleChange={handleAngleChange}
+          onCenterChange={handleCenterChange}
+        />
+      </div>
       
       <!-- Color Stop Bar -->
-      <ColorStopBar
-        {colorStops}
-        selectedStopId={selectedStopId}
-        onColorStopSelect={selectColorStop}
-        onColorStopRemove={removeColorStop}
-        onColorStopAdd={addColorStop}
-        onColorStopDragStart={handleColorStopDragStart}
-        onColorStopPositionChange={updateColorStopPosition}
-        bind:this={colorStopBarComponent}
-      />
-      
-      <!-- Instructions for color stop bar -->
-      <p class="text-sm mt-2 mb-4 text-center theme-text-muted">Click to add a color stop, drag to move, click on a stop to edit, double-click to remove.</p>
+      <div class="mt-4 w-full">
+        <ColorStopBar 
+          bind:this={colorStopBarComponent}
+          {colorStops}
+          {selectedStopId}
+          onColorStopAdd={addColorStop}
+          onColorStopSelect={selectColorStop}
+          onColorStopDragStart={handleColorStopDragStart}
+          onColorStopRemove={removeColorStop}
+          onColorStopPositionChange={updateColorStopPosition}
+        />
+        <p class="text-sm mt-2 text-center theme-text-muted">Click to add a color stop, drag to move, click on a stop to edit, double-click to remove.</p>
+      </div>
     </div>
     
-    <!-- Gradient Settings -->
-    <div class="theme-card p-4 rounded-lg gradient-border">
+    <!-- Gradient Presets Column -->
+    <div class="theme-card p-2 rounded-lg gradient-border w-auto">
+      <GradientPresets on:selectPreset={handlePresetSelect} />
+    </div>
+    
+    <!-- Controls -->
+    <div class="theme-card p-4 rounded-lg gradient-border w-auto">
       <h2 class="text-xl mb-4 theme-heading">Settings</h2>
       <!-- Gradient Type -->
       <div class="mb-4">

@@ -281,8 +281,8 @@
         </button>
       </div>
     {:else}
-      <!-- RGB inputs in 3-column grid -->
-      <div class="grid grid-cols-3 gap-1">
+      <!-- RGB inputs in 4-column grid -->
+      <div class="grid grid-cols-4 gap-1">
         <div class="flex items-center">
           <label for="red-input" class="rgb-label">R</label>
           <div class="flex-1">
@@ -293,7 +293,7 @@
               max="255" 
               value={localRed} 
               oninput={(e) => { localRed = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
-              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner" 
+              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner text-center" 
               style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
             />
           </div>
@@ -308,7 +308,7 @@
               max="255" 
               value={localGreen} 
               oninput={(e) => { localGreen = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
-              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner" 
+              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner text-center" 
               style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
             />
           </div>
@@ -323,7 +323,23 @@
               max="255" 
               value={localBlue} 
               oninput={(e) => { localBlue = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
-              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner" 
+              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner text-center" 
+              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
+            />
+          </div>
+        </div>
+        <div class="flex items-center">
+          <label for="alpha-input" class="rgb-label">A</label>
+          <div class="flex-1">
+            <input 
+              id="alpha-input"
+              type="number" 
+              min="0" 
+              max="1" 
+              step="0.01"
+              value={localAlpha.toFixed(2)} 
+              oninput={(e) => { localAlpha = Math.max(0, Math.min(1, Number((e.target as HTMLInputElement).value))); notifyChange(); }}
+              class="w-full h-8 py-1 px-1 text-sm rounded no-spinner text-center" 
               style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
             />
           </div>
@@ -397,6 +413,7 @@
   
   .top-right {
     grid-area: top-right;
+    width: 264px;
   }
   
   .bottom-left {
@@ -405,6 +422,7 @@
   
   .bottom-right {
     grid-area: bottom-right;
+    width: 264px;
   }
   
   /* Grid section styling */
@@ -418,12 +436,13 @@
   /* RGB styling removed in favor of grid layout */
   
   .rgb-label {
-    width: 12px;
+    width: 10px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 700;
     color: var(--color-text-secondary);
-    margin-right: 4px;
-    margin-left: 12px;
+    margin-right: 2px;
+    margin-left: 6px;
+    padding: 0;
   }
   
   /* RGB input group styling removed in favor of grid layout */

@@ -35,7 +35,7 @@
         <div>
           <div class="flex items-center justify-between mb-1">
             <label for="export-width" class="block text-sm font-medium" style="color: var(--color-text-secondary);">W:</label>
-            <div class="relative w-20">
+            <div class="relative w-16">
               <input 
                 type="number" 
                 value={exportWidth} 
@@ -53,7 +53,7 @@
         <div>
           <div class="flex items-center justify-between mb-1">
             <label for="export-height" class="block text-sm font-medium" style="color: var(--color-text-secondary);">H:</label>
-            <div class="relative w-20">
+            <div class="relative w-16">
               <input 
                 type="number" 
                 value={exportHeight} 
