@@ -423,6 +423,7 @@
     font-weight: 500;
     color: var(--color-text-secondary);
     margin-right: 4px;
+    margin-left: 12px;
   }
   
   /* RGB input group styling removed in favor of grid layout */

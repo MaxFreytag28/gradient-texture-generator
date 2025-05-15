@@ -77,7 +77,7 @@
   }
   
   .toggle-option.active {
-    color: var(--color-text-primary);
+    color: white;
     font-weight: 600;
   }
   
