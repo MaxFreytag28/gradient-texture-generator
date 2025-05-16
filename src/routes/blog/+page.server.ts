@@ -290,14 +290,24 @@ const _blogPosts: BlogPosts = {
 };
 
 // Helper function to get all posts for the index
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ setHeaders }) => {
+  // Set cache control headers to prevent caching issues
+  setHeaders({
+    'cache-control': 'no-cache, no-store, must-revalidate',
+    'pragma': 'no-cache',
+    'expires': '0'
+  });
+
+  // Make a copy of the blog posts to avoid reference issues
+  const blogPostsCopy = { ..._blogPosts };
+  
   // Return all blog posts for the blog index page
-  const posts = Object.values(_blogPosts).sort((a, b) => 
+  const posts = Object.values(blogPostsCopy).sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   
   return {
-    posts: posts.map(({ content, ...post }) => post) // Don't send full content to index
+    posts: posts.map(({ content, ...post }) => ({ ...post })) // Return copies to avoid reference issues
   };
 };
 
