@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { type ColorStop, type GradientType, type RadialGradientOptions } from '$lib/types';
+  import type { PageData } from './$types';
   
   // Import components
   import WIPBanner from '$lib/components/WIPBanner.svelte';
@@ -16,6 +17,11 @@
   import ExportSettings from '$lib/components/ExportSettings.svelte';
   import AdvertisementPlaceholder from '$lib/components/AdvertisementPlaceholder.svelte';
   import GradientPresets from '$lib/components/GradientPresets.svelte';
+  import BlogPosts from '$lib/components/BlogPosts.svelte';
+  
+  // Get the blog posts data from the server using runes
+  const props = $props();
+  const blogPosts = $derived(props.data?.blogPosts || []);
   
   // Gradient properties
   let gradientType = $state<GradientType>('linear');
@@ -990,6 +996,9 @@
     </div>
   </div>
 </div>
+
+<!-- Blog Posts Section -->
+<BlogPosts posts={blogPosts} />
 
 <!-- FAQ Section for SEO and user information -->
 <FaqSection />

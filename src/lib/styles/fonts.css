@@ -6,18 +6,31 @@ body {
 }
 
 /* Display Font: Cal Sans */
-h1, h2, h3, h4, h5, h6,
+h1, h2,
 .font-heading {
   font-family: 'Cal Sans', sans-serif;
   font-weight: 400;
   color: #c8c3bf;
 }
 
+/* H3 and below use Urbanist */
+h3, h4, h5, h6 {
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 600;
+  color: var(--color-text-heading);
+}
+
 /* Heading Styles */
-h1, h2, h3 {
+h1, h2 {
   text-transform: uppercase;
   letter-spacing: -0.02em;
   font-weight: 400;
+}
+
+h3, h4, h5, h6 {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-weight: 600;
 }
 
 h1 {
