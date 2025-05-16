@@ -53,15 +53,15 @@
       ]
     },
     {
-      id: 'radial-purple',
-      name: 'Purple Haze',
+      id: 'soft-blue',
+      name: 'Soft Blue',
       gradientType: 'radial',
       centerX: 50,
       centerY: 50,
       radialOptions: { scale: 1.0 },
       colorStops: [
-        { id: 'purple-1', color: '#8E2DE2', position: 0, alpha: 1 },
-        { id: 'purple-2', color: '#4A00E0', position: 100, alpha: 1 }
+        { id: 'soft-blue-1', color: '#E0F7FA', position: 0, alpha: 1 },
+        { id: 'soft-blue-2', color: '#80DEEA', position: 100, alpha: 1 }
       ]
     },
     {
