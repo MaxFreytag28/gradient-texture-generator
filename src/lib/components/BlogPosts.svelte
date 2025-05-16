@@ -91,7 +91,7 @@
   <div class="container mx-auto px-4">
     {#if showHeading}
     <div class="mb-6">
-      <h2 class="text-xl md:text-2xl font-bold font-heading tracking-tight letter-spacing--0.02em uppercase">{headingText}</h2>
+      <h2 class="theme-heading">{headingText}</h2>
     </div>
     {/if}
     
