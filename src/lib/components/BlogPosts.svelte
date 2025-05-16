@@ -91,7 +91,12 @@
   <div class="container mx-auto px-4">
     {#if showHeading}
     <div class="mb-6">
-      <h2 class="theme-heading">{headingText}</h2>
+      <div class="flex justify-between items-center">
+        <h2 class="theme-heading">{headingText}</h2>
+        <a href="/blog" class="text-accent-primary hover:text-accent-primary-dark transition-colors">
+          View All
+        </a>
+      </div>
     </div>
     {/if}
     
