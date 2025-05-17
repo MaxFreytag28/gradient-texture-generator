@@ -1,37 +1,25 @@
-<script>
+<script lang="ts">
   // No need to import app.css as it's already imported in the layout
-  import { page } from '$app/stores';
-  
-  // Set the page metadata
-  $: meta = {
-    title: 'Legal Disclosure - Gradient Texture Generator',
-    description: 'Legal information and disclosure for MakeGradients.app',
-    url: 'https://makegradients.app/legal',
-    image: 'https://makegradients.app/images/gradient-preview-social.png'
-  };
-  
-  // Update the page metadata
-  $page.data.meta = meta;
 </script>
 
 <svelte:head>
   <!-- Primary Meta Tags -->
-  <title>{meta.title}</title>
-  <meta name="description" content={meta.description} />
-  <link rel="canonical" href={meta.url} />
+  <title>Legal Disclosure - Gradient Texture Generator</title>
+  <meta name="description" content="Legal information and disclosure for MakeGradients.app" />
+  <link rel="canonical" href="https://makegradients.app/legal" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content={meta.url} />
-  <meta property="og:title" content={meta.title} />
-  <meta property="og:description" content={meta.description} />
-  <meta property="og:image" content={meta.image} />
+  <meta property="og:url" content="https://makegradients.app/legal" />
+  <meta property="og:title" content="Legal Disclosure - Gradient Texture Generator" />
+  <meta property="og:description" content="Legal information and disclosure for MakeGradients.app" />
+  <meta property="og:image" content="https://makegradients.app/images/gradient-preview-social.png" />
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={meta.title} />
-  <meta name="twitter:description" content={meta.description} />
-  <meta name="twitter:image" content={meta.image} />
+  <meta name="twitter:title" content="Legal Disclosure - Gradient Texture Generator" />
+  <meta name="twitter:description" content="Legal information and disclosure for MakeGradients.app" />
+  <meta name="twitter:image" content="https://makegradients.app/images/gradient-preview-social.png" />
   
   <!-- Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

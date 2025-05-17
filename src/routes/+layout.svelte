@@ -3,6 +3,7 @@
 	import '$lib/styles/fonts.css';
 	import '$lib/styles/theme.css';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+	import Footer from '$lib/components/Footer.svelte';
 
 	injectSpeedInsights();
 </script>
@@ -42,4 +43,7 @@
 	<main class="flex-grow">
 		<slot></slot>
 	</main>
+	<Footer />
 </div>
+
+
