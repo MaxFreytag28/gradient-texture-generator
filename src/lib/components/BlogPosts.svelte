@@ -147,14 +147,12 @@
           }
         </style>
         {#each posts.filter(post => post.slug !== currentSlug) as post}
+          <!-- Using standard anchor tag for better SEO and accessibility -->
+          <!-- SvelteKit will handle the client-side navigation automatically -->
           <a 
-            href={`/blog/${post.slug}`} 
-            class="flex-shrink-0 w-80 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group"
+            href={`/blog/${post.slug}`}
+            class="flex-shrink-0 w-80 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group block"
             style="background-color: var(--color-bg-secondary);"
-            on:click|preventDefault={(e) => {
-              // Force a full page navigation to ensure proper loading
-              window.location.href = `/blog/${post.slug}`;
-            }}
           >
             <div class={`h-16 bg-gradient-to-r ${post.gradient}`}></div>
             <div class="p-4">
