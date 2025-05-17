@@ -58,21 +58,26 @@
 </script>
 
 <svelte:head>
+  <!-- Primary Meta Tags -->
   <title>{post.title} — Gradient Texture Generator</title>
   <meta name="description" content={post.excerpt} />
+  <link rel="canonical" href={`https://makegradients.app/blog/${post.slug}`} />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content={post.title} />
   <meta property="og:description" content={post.excerpt} />
-  <meta property="og:url" content={`/blog/${post.slug}`} />
-  <meta property="og:image" content={`/blog/og-${post.slug}.jpg`} />
+  <meta property="og:url" content={`https://makegradients.app/blog/${post.slug}`} />
+  <meta property="og:image" content={`https://makegradients.app/blog/og-${post.slug}.jpg`} />
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={post.title} />
   <meta name="twitter:description" content={post.excerpt} />
-  <meta name="twitter:image" content={`/blog/og-${post.slug}.jpg`} />
+  <meta name="twitter:image" content={`https://makegradients.app/blog/og-${post.slug}.jpg`} />
+  
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
 <div class="blog-container">
