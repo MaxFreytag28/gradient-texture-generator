@@ -69,32 +69,64 @@
           </div>
         </div>
       </div>
-      
-      <!-- Format selection -->
-      <label for="export-format" class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Format</label>
-      <select 
-        id="export-format" 
-        bind:value={exportFormat} 
-        class="w-full p-2 rounded"
-      >
-        <option value="png">PNG</option>
-        <option value="jpeg">JPEG</option>
-        <option value="webp">WebP</option>
-        <option value="svg">SVG</option>
-      </select>
     </div>
     
-    <!-- Column 2: Preset sizes in 2 rows -->
+    <!-- Column 2: Preset sizes in 3 columns -->
     <div>
       <span class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Preset Sizes</span>
-      <div class="grid grid-cols-2 gap-2" role="group" aria-label="Preset sizes">
+      <div class="grid grid-cols-3 gap-2" role="group" aria-label="Preset sizes">
         {#each presetSizes as preset}
           <button 
             type="button"
-            class="theme-button-secondary px-2 py-1 text-xs rounded"
+            class="theme-button-secondary px-1 py-1 text-xs rounded"
             onclick={() => setPresetSize(preset.width, preset.height)}
           >{preset.label}</button>
         {/each}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Format selection -->
+  <div class="mb-4">
+    <div class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Format</div>
+    <div class="toggle-switch-container">
+      <div class="toggle-switch" 
+        class:jpeg={exportFormat === 'jpeg'}
+        class:webp={exportFormat === 'webp'}
+        class:svg={exportFormat === 'svg'}
+      >
+        <button 
+          class="toggle-option" 
+          class:active={exportFormat === 'png'}
+          onclick={() => exportFormat = 'png'}
+          type="button"
+        >
+          PNG
+        </button>
+        <button 
+          class="toggle-option" 
+          class:active={exportFormat === 'jpeg'}
+          onclick={() => exportFormat = 'jpeg'}
+          type="button"
+        >
+          JPEG
+        </button>
+        <button 
+          class="toggle-option" 
+          class:active={exportFormat === 'webp'}
+          onclick={() => exportFormat = 'webp'}
+          type="button"
+        >
+          WebP
+        </button>
+        <button 
+          class="toggle-option" 
+          class:active={exportFormat === 'svg'}
+          onclick={() => exportFormat = 'svg'}
+          type="button"
+        >
+          SVG
+        </button>
       </div>
     </div>
   </div>
@@ -108,3 +140,71 @@
     Export Texture
   </button>
 </div>
+
+<style>
+  .toggle-switch-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  
+  .toggle-switch {
+    display: flex;
+    background-color: var(--color-bg-tertiary);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--color-border-primary);
+    width: 100%;
+  }
+  
+  .toggle-option {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    color: var(--color-text-secondary);
+    z-index: 1;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .toggle-option:hover:not(.active) {
+    color: var(--color-text-primary);
+    background-color: color-mix(in srgb, transparent 90%, var(--color-accent-primary));
+  }
+  
+  .toggle-option.active {
+    color: white;
+    font-weight: 600;
+  }
+  
+  .toggle-switch::before {
+    content: '';
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    height: calc(100% - 0.25rem);
+    width: calc(25% - 0.25rem);
+    background-color: var(--color-bg-accent);
+    border-radius: 0.375rem;
+    transition: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  .toggle-switch.jpeg::before {
+    transform: translateX(calc(100% + 0.25rem));
+  }
+  
+  .toggle-switch.webp::before {
+    transform: translateX(calc(200% + 0.5rem));
+  }
+  
+  .toggle-switch.svg::before {
+    transform: translateX(calc(300% + 0.75rem));
+  }
+</style>

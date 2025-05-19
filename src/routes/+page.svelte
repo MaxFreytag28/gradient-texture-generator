@@ -873,6 +873,7 @@
           {colorStops}
           {radialOptions}
           {previewSize}
+          {isSnappingEnabled}
           onAngleChange={handleAngleChange}
           onCenterChange={handleCenterChange}
         />

@@ -327,10 +327,15 @@
         
         // Apply snapping if enabled
         if (props.isSnappingEnabled) {
-          localAngle = Math.round(angle / 5) * 5;
+          // Ensure we snap to 5 degree increments
+          angle = Math.round(angle / 5) * 5;
         } else {
-          localAngle = Math.round(angle * 10) / 10;
+          // Round to 1 decimal place for smoother movement
+          angle = Math.round(angle * 10) / 10;
         }
+        
+        // Update local angle
+        localAngle = angle;
         
         // Notify parent component about angle change
         props.onAngleChange(localAngle);
