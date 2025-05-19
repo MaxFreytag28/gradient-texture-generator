@@ -21,6 +21,26 @@
   let localCenterX = $state(props.centerX);
   let localCenterY = $state(props.centerY);
   
+  // Handle visibility toggle
+  let showHandles = $state(true);
+  let isHoveringPreview = $state(false);
+  let buttonScale = $state(1.0);
+  let buttonOpacity = $state(0.4);
+  
+  // Button hover handlers
+  function handleButtonMouseEnter() {
+    buttonScale = 1.1;
+    buttonOpacity = 0.6;
+    isHoveringPreview = true; // Consider the button part of the preview for hover purposes
+  }
+  
+  function handleButtonMouseLeave() {
+    buttonScale = 1.0;
+    buttonOpacity = 0.4;
+    // Don't set isHoveringPreview to false here, as that would make the button disappear
+    // Let the preview's mouseleave handler handle that
+  }
+  
   // Handle for angle/center
   let isDraggingHandle = $state(false);
   let isDraggingAngleHandle = $state(false);
@@ -518,11 +538,16 @@
 </script>
 
 <div class="relative">
-  <div class="relative w-full aspect-square">
+  <div 
+    class="relative w-full aspect-square" 
+    onmouseenter={() => isHoveringPreview = true}
+    onmouseleave={() => isHoveringPreview = false}
+    role="presentation"
+  >
     <!-- CSS Gradient Preview -->
     <div
       bind:this={previewElement}
-      class="w-full h-full rounded-lg cursor-crosshair"
+      class="w-full h-full rounded-lg cursor-crosshair relative"
       style="touch-action: none; border: none;"
       onmousedown={handlePreviewClick}
       role="button"
@@ -530,8 +555,39 @@
       tabindex="0"
     ></div>
     
+    <!-- Toggle Visibility Button -->
+    <button
+      type="button"
+      class="absolute top-2 right-2 z-20 p-2 rounded-full transition-all duration-300 cursor-pointer"
+      style="
+        background-color: rgba(var(--color-bg-primary-rgb), {buttonOpacity}); /* Using theme variable with alpha */
+        opacity: {showHandles || (!showHandles && isHoveringPreview) ? 1 : 0};
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transform: scale({buttonScale});
+        color: var(--color-text-heading); /* Using theme heading text color */
+      "
+      onmouseenter={handleButtonMouseEnter}
+      onmouseleave={handleButtonMouseLeave}
+      aria-label="{showHandles ? 'Hide handles' : 'Show handles'}"
+      onclick={() => showHandles = !showHandles}
+    >
+      {#if showHandles}
+        <!-- Eye Open Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      {:else}
+        <!-- Eye Closed Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      {/if}
+    </button>
+    
     <!-- DOM-based line from center -->
-    {#if props.gradientType === 'linear'}
+    {#if props.gradientType === 'linear' && showHandles}
       <div 
         class="absolute pointer-events-none z-[5]"
         style="
@@ -544,7 +600,7 @@
           transform-origin: left center;
         "
       ></div>
-    {:else if props.gradientType === 'conic'}
+    {:else if props.gradientType === 'conic' && showHandles}
       <!-- Line connecting center handle to angle handle -->
       <div 
         class="absolute pointer-events-none z-[5]"
@@ -561,6 +617,7 @@
     {/if}
     
     <!-- Gradient Handle Overlay -->
+    {#if showHandles}
     <div 
       id="gradient-handle"
       class="absolute w-[20px] h-[20px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
@@ -581,9 +638,10 @@
       ontouchstart={startDragHandle}
       ondblclick={resetMainHandle}
     ></div>
+    {/if}
     
     <!-- Angle Handle for Conic Gradients -->
-    {#if props.gradientType === 'conic'}
+    {#if props.gradientType === 'conic' && showHandles}
       <div 
         id="angle-handle"
         class="absolute w-[20px] h-[20px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"

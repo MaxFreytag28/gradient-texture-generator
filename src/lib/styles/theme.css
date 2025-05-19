@@ -3,6 +3,7 @@
 :root {
   /* Dark Theme Colors - Lighter Version */
   --color-bg-primary: #323338;
+  --color-bg-primary-rgb: 50, 51, 56; /* RGB version for rgba() usage */
   --color-bg-secondary: #434246;
   --color-bg-tertiary: #5c5c64;
   --color-bg-accent: #a39a8e;
@@ -90,6 +91,23 @@ body {
 
 .theme-button-secondary:active {
   background-color: color-mix(in srgb, var(--color-accent-primary) 90%, black);
+}
+
+/* Icon button style */
+.theme-button-icon {
+  background-color: var(--color-bg-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-button-icon:hover {
+  background-color: color-mix(in srgb, var(--color-bg-primary) 85%, white);
+  transform: scale(1.05);
+}
+
+.theme-button-icon:active {
+  background-color: color-mix(in srgb, var(--color-bg-primary) 90%, black);
+  transform: scale(0.95);
 }
 
 /* Text styles */

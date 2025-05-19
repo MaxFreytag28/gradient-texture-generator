@@ -230,15 +230,19 @@
   <div class="left-column">
     <!-- Top Left: RGB/HEX toggle button (no background) -->
     <div class="top-left">
-      <button 
-        type="button"
-        class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
-        title="Toggle color format"
-        aria-label="Toggle between HEX and RGB color formats"
-        onclick={toggleColorInputMode}
-      >
-        <span class="text-xs font-bold">{colorInputMode === 'hex' ? 'RGB' : 'HEX'}</span>
-      </button>
+      <div class="color-input-wrapper flex items-center justify-center">
+        <div style="margin-top: 8px;">
+          <button 
+            type="button"
+            class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+            title="Toggle color format"
+            aria-label="Toggle between HEX and RGB color formats"
+            onclick={toggleColorInputMode}
+          >
+            <span class="text-xs font-bold">{colorInputMode === 'hex' ? 'RGB' : 'HEX'}</span>
+          </button>
+        </div>
+      </div>
     </div>
     
     <!-- Bottom Left: Color stops with background -->
@@ -414,7 +418,7 @@
   .left-column {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
     width: auto;
   }
   
@@ -427,7 +431,11 @@
   }
   
   .top-left {
-    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    height: 40px; /* Match the height of the color-input-wrapper */
+    padding: 8px 8px 0px 8px; /* Only keep left and right padding */
   }
   
   .top-right {
