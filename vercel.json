@@ -1,8 +1,14 @@
 {
   "redirects": [
     {
-      "source": "https://www.makegradients.app/:path*",
-      "destination": "https://makegradients.app/:path*",
+      "source": "/(.*)$",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.makegradients.app"
+        }
+      ],
+      "destination": "https://makegradients.app/$1",
       "permanent": true
     }
   ],
