@@ -224,161 +224,169 @@
 
 <hr class="my-4" style="border-color: var(--color-border-primary); border-width: 1px; border-style: solid; background: none;">
 
-<!-- Grid layout for color picker -->
-<div class="color-picker-grid">
-  <!-- Top Left: RGB/HEX toggle button -->
-  <div class="top-left grid-section">
-    <button 
-      type="button"
-      class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
-      title="Toggle color format"
-      aria-label="Toggle between HEX and RGB color formats"
-      onclick={toggleColorInputMode}
-    >
-      <span class="text-xs font-bold">{colorInputMode === 'hex' ? 'RGB' : 'HEX'}</span>
-    </button>
-  </div>
-  
-  <!-- Top Right: Color input (HEX or RGB) -->
-  <div class="top-right grid-section">
-    {#if colorInputMode === 'hex'}
-      <!-- HEX input -->
-      <div class="flex items-center space-x-1">
-        <label for="hex-input" class="sr-only">Hex Color</label>
-        <input 
-          id="hex-input"
-          type="text" 
-          value={localColor} 
-          oninput={handleHexChange}
-          class="flex-1 py-1 px-2 text-sm rounded h-8" 
-          style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
-          placeholder="#RRGGBB"
-          aria-label="Hex Color"
-        />
-        <!-- Copy button -->
-        <button 
-          type="button"
-          class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
-          title="Copy color"
-          aria-label="Copy color to clipboard"
-          onclick={copyColorToClipboard}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-          </svg>
-        </button>
-        <!-- Paste button -->
-        <button 
-          type="button"
-          class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
-          title="Paste color"
-          aria-label="Paste color from clipboard"
-          onclick={pasteColorFromClipboard}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-        </button>
+<!-- Grid layout for color picker with 2-column layout -->
+<div class="color-picker-layout">
+  <!-- Left Column -->
+  <div class="left-column">
+    <!-- Top Left: RGB/HEX toggle button (no background) -->
+    <div class="top-left">
+      <button 
+        type="button"
+        class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+        title="Toggle color format"
+        aria-label="Toggle between HEX and RGB color formats"
+        onclick={toggleColorInputMode}
+      >
+        <span class="text-xs font-bold">{colorInputMode === 'hex' ? 'RGB' : 'HEX'}</span>
+      </button>
+    </div>
+    
+    <!-- Bottom Left: Color stops with background -->
+    <div class="bottom-left grid-section">
+      <div class="color-stops-column">
+        {#each colorStops as stop}
+          <button 
+            class="color-stop-item {props.selectedStop && props.selectedStop.id === stop.id ? 'selected' : ''}" 
+            onclick={() => onColorStopSelect(stop.id)}
+            title="Position: {stop.position}%"
+          >
+            <!-- Checkerboard background for transparency -->
+            <div class="absolute inset-0 bg-checkerboard" style="border-radius: 6px;"></div>
+            
+            <!-- Color display -->
+            <div 
+              class="absolute inset-0" 
+              style="background-color: {stop.color}; opacity: {stop.alpha}; border-radius: 6px;"
+            ></div>
+            
+            <!-- Border -->
+            <div 
+              class="absolute inset-0 rounded-lg border-2 {props.selectedStop && props.selectedStop.id === stop.id ? 'border-accent' : 'border-secondary'}"
+              style="border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);"
+            ></div>
+          </button>
+        {/each}
       </div>
-    {:else}
-      <!-- RGB inputs in 4-column grid -->
-      <div class="grid grid-cols-4 gap-1">
-        <div class="flex items-center">
-          <label for="red-input" class="rgb-label">R</label>
-          <div class="flex-1">
-            <input 
-              id="red-input"
-              type="number" 
-              min="0" 
-              max="255" 
-              value={localRed} 
-              oninput={(e) => { localRed = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
-              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner text-center" 
-              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
-            />
-          </div>
-        </div>
-        <div class="flex items-center">
-          <label for="green-input" class="rgb-label">G</label>
-          <div class="flex-1">
-            <input 
-              id="green-input"
-              type="number" 
-              min="0" 
-              max="255" 
-              value={localGreen} 
-              oninput={(e) => { localGreen = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
-              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner text-center" 
-              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
-            />
-          </div>
-        </div>
-        <div class="flex items-center">
-          <label for="blue-input" class="rgb-label">B</label>
-          <div class="flex-1">
-            <input 
-              id="blue-input"
-              type="number" 
-              min="0" 
-              max="255" 
-              value={localBlue} 
-              oninput={(e) => { localBlue = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
-              class="w-full h-8 py-1 px-2 text-sm rounded no-spinner text-center" 
-              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
-            />
-          </div>
-        </div>
-        <div class="flex items-center">
-          <label for="alpha-input" class="rgb-label">A</label>
-          <div class="flex-1">
-            <input 
-              id="alpha-input"
-              type="number" 
-              min="0" 
-              max="1" 
-              step="0.01"
-              value={localAlpha.toFixed(2)} 
-              oninput={(e) => { localAlpha = Math.max(0, Math.min(1, Number((e.target as HTMLInputElement).value))); notifyChange(); }}
-              class="w-full h-8 py-1 px-1 text-sm rounded no-spinner text-center" 
-              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary);"
-            />
-          </div>
-        </div>
-      </div>
-    {/if}
-  </div>
-  
-  <!-- Bottom Left: Color stops -->
-  <div class="bottom-left grid-section">
-    <div class="color-stops-column">
-      {#each colorStops as stop}
-        <button 
-          class="color-stop-item {props.selectedStop && props.selectedStop.id === stop.id ? 'selected' : ''}" 
-          onclick={() => onColorStopSelect(stop.id)}
-          title="Position: {stop.position}%"
-        >
-          <!-- Checkerboard background for transparency -->
-          <div class="absolute inset-0 bg-checkerboard" style="border-radius: 6px;"></div>
-          
-          <!-- Color display -->
-          <div 
-            class="absolute inset-0" 
-            style="background-color: {stop.color}; opacity: {stop.alpha}; border-radius: 6px;"
-          ></div>
-          
-          <!-- Border -->
-          <div 
-            class="absolute inset-0 rounded-lg border-2 {props.selectedStop && props.selectedStop.id === stop.id ? 'border-accent' : 'border-secondary'}"
-            style="border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);"
-          ></div>
-        </button>
-      {/each}
     </div>
   </div>
   
-  <!-- Bottom Right: Color picker -->
-  <div class="bottom-right grid-section">
-    <div bind:this={colorPickerElement} class="w-full flex justify-center"></div>
+  <!-- Right Column -->
+  <div class="right-column">
+    <!-- Top Right: Color input (HEX or RGB) with background -->
+    <div class="top-right grid-section">
+      <div class="color-input-wrapper">
+        {#if colorInputMode === 'hex'}
+          <!-- HEX input -->
+          <div class="flex items-center space-x-1 color-input-container" style="width: 250px;">
+            <label for="hex-input" class="sr-only">Hex Color</label>
+            <input 
+              id="hex-input"
+              type="text" 
+              value={localColor} 
+              oninput={handleHexChange}
+              class="flex-1 py-1 px-2 text-sm rounded h-8" 
+              style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary); width: 100%;"
+              placeholder="#RRGGBB"
+              aria-label="Hex Color"
+            />
+            <!-- Copy button -->
+            <button 
+              type="button"
+              class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+              title="Copy color"
+              aria-label="Copy color to clipboard"
+              onclick={copyColorToClipboard}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+            </button>
+            <!-- Paste button -->
+            <button 
+              type="button"
+              class="theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+              title="Paste color"
+              aria-label="Paste color from clipboard"
+              onclick={pasteColorFromClipboard}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </button>
+          </div>
+        {:else}
+          <!-- RGB inputs in 4-column grid -->
+          <div class="grid grid-cols-4 gap-1 color-input-container" style="width: 250px;">
+            <div class="flex items-center">
+              <label for="red-input" class="rgb-label">R</label>
+              <div class="flex-1">
+                <input 
+                  id="red-input"
+                  type="number" 
+                  min="0" 
+                  max="255" 
+                  value={localRed} 
+                  oninput={(e) => { localRed = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
+                  class="w-full h-8 py-1 px-1 text-sm rounded no-spinner text-center" 
+                  style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary); max-width: 40px;"
+                />
+              </div>
+            </div>
+            <div class="flex items-center">
+              <label for="green-input" class="rgb-label">G</label>
+              <div class="flex-1">
+                <input 
+                  id="green-input"
+                  type="number" 
+                  min="0" 
+                  max="255" 
+                  value={localGreen} 
+                  oninput={(e) => { localGreen = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
+                  class="w-full h-8 py-1 px-1 text-sm rounded no-spinner text-center" 
+                  style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary); max-width: 40px;"
+                />
+              </div>
+            </div>
+            <div class="flex items-center">
+              <label for="blue-input" class="rgb-label">B</label>
+              <div class="flex-1">
+                <input 
+                  id="blue-input"
+                  type="number" 
+                  min="0" 
+                  max="255" 
+                  value={localBlue} 
+                  oninput={(e) => { localBlue = parseInt((e.target as HTMLInputElement).value); handleRgbChange(); }}
+                  class="w-full h-8 py-1 px-1 text-sm rounded no-spinner text-center" 
+                  style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary); max-width: 40px;"
+                />
+              </div>
+            </div>
+            <div class="flex items-center">
+              <label for="alpha-input" class="rgb-label">A</label>
+              <div class="flex-1">
+                <input 
+                  id="alpha-input"
+                  type="number" 
+                  min="0" 
+                  max="1" 
+                  step="0.01"
+                  value={localAlpha.toFixed(2)} 
+                  oninput={(e) => { localAlpha = Math.max(0, Math.min(1, Number((e.target as HTMLInputElement).value))); notifyChange(); }}
+                  class="w-full h-8 py-1 px-1 text-sm rounded no-spinner text-center" 
+                  style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary); max-width: 40px;"
+                />
+              </div>
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+    
+    <!-- Bottom Right: Color picker with same background -->
+    <div class="bottom-right grid-section">
+      <div bind:this={colorPickerElement} class="w-full flex justify-center"></div>
+    </div>
   </div>
 </div>
 
@@ -396,40 +404,92 @@
     background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
   }
   
-  /* Grid layout for color picker */
-  .color-picker-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: 
-      "top-left top-right"
-      "bottom-left bottom-right";
+  /* New 2-column layout for color picker */
+  .color-picker-layout {
+    display: flex;
     gap: 8px;
   }
   
+  /* Left column */
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: auto;
+  }
+  
+  /* Right column */
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0; /* No gap between top and bottom sections */
+  }
+  
   .top-left {
-    grid-area: top-left;
+    padding: 8px;
   }
   
   .top-right {
-    grid-area: top-right;
-    width: 264px;
+    width: 100%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
   }
   
   .bottom-left {
-    grid-area: bottom-left;
+    flex: 1;
+    border-radius: 8px;
   }
   
   .bottom-right {
-    grid-area: bottom-right;
-    width: 264px;
+    width: 100%;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
   }
   
   /* Grid section styling */
   .grid-section {
-    border-radius: 8px;
     padding: 8px;
     background-color: var(--color-bg-primary);
+  }
+  
+  /* Connect top-right and bottom-right sections */
+  .right-column .top-right {
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .right-column .bottom-right {
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  /* Ensure consistent width between HEX and RGB inputs */
+  .color-input-container {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .color-input-wrapper {
+    width: 100%;
+    height: 40px; /* Fixed height to prevent layout shifts */
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Set fixed widths for both input modes */
+  .flex.items-center.space-x-1.color-input-container,
+  .grid.grid-cols-4.gap-1.color-input-container {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Ensure input fields have consistent width */
+  #hex-input {
+    width: 100%;
+    max-width: calc(100% - 70px); /* Accounting for the two buttons */
   }
   
   /* RGB inputs styling */
