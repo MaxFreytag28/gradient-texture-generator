@@ -613,7 +613,7 @@
             top: 0;
             width: calc(100% - 8px);
             height: 100%;
-            background-color: var(--color-bg-secondary);
+            background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
           "
         ></div>
       </div>
@@ -639,7 +639,7 @@
             top: 0;
             width: calc(100% - 16px);
             height: 100%;
-            background-color: var(--color-bg-secondary);
+            background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
           "
         ></div>
       </div>
