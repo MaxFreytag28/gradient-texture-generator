@@ -86,59 +86,61 @@
     </div>
   </div>
   
-  <!-- Format selection -->
-  <div class="mb-4">
-    <div class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Format</div>
-    <div class="toggle-switch-container">
-      <div class="toggle-switch" 
-        class:jpeg={exportFormat === 'jpeg'}
-        class:webp={exportFormat === 'webp'}
-        class:svg={exportFormat === 'svg'}
-      >
-        <button 
-          class="toggle-option" 
-          class:active={exportFormat === 'png'}
-          onclick={() => exportFormat = 'png'}
-          type="button"
+  <!-- Format selection and Export button in one row -->
+  <div class="flex gap-4 items-end">
+    <div class="flex-grow">
+      <div class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Format</div>
+      <div class="toggle-switch-container">
+        <div class="toggle-switch" 
+          class:jpeg={exportFormat === 'jpeg'}
+          class:webp={exportFormat === 'webp'}
+          class:svg={exportFormat === 'svg'}
         >
-          PNG
-        </button>
-        <button 
-          class="toggle-option" 
-          class:active={exportFormat === 'jpeg'}
-          onclick={() => exportFormat = 'jpeg'}
-          type="button"
-        >
-          JPEG
-        </button>
-        <button 
-          class="toggle-option" 
-          class:active={exportFormat === 'webp'}
-          onclick={() => exportFormat = 'webp'}
-          type="button"
-        >
-          WebP
-        </button>
-        <button 
-          class="toggle-option" 
-          class:active={exportFormat === 'svg'}
-          onclick={() => exportFormat = 'svg'}
-          type="button"
-        >
-          SVG
-        </button>
+          <button 
+            class="toggle-option" 
+            class:active={exportFormat === 'png'}
+            onclick={() => exportFormat = 'png'}
+            type="button"
+          >
+            PNG
+          </button>
+          <button 
+            class="toggle-option" 
+            class:active={exportFormat === 'jpeg'}
+            onclick={() => exportFormat = 'jpeg'}
+            type="button"
+          >
+            JPEG
+          </button>
+          <button 
+            class="toggle-option" 
+            class:active={exportFormat === 'webp'}
+            onclick={() => exportFormat = 'webp'}
+            type="button"
+          >
+            WebP
+          </button>
+          <button 
+            class="toggle-option" 
+            class:active={exportFormat === 'svg'}
+            onclick={() => exportFormat = 'svg'}
+            type="button"
+          >
+            SVG
+          </button>
+        </div>
       </div>
     </div>
+    
+    <!-- Export button -->
+    <button 
+      type="button" 
+      onclick={onExport}
+      class="theme-button-primary font-medium py-2 px-4 rounded min-w-[120px] h-[38px]"
+    >
+      Export
+    </button>
   </div>
-  
-  <!-- Export button -->
-  <button 
-    type="button" 
-    onclick={onExport}
-    class="w-full theme-button-primary font-medium py-2 px-4 rounded"
-  >
-    Export Texture
-  </button>
 </div>
 
 <style>

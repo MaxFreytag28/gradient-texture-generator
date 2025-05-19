@@ -15,6 +15,7 @@
   import CenterControl from '$lib/components/CenterControl.svelte';
   import RadialScaleControl from '$lib/components/RadialScaleControl.svelte';
   import ExportSettings from '$lib/components/ExportSettings.svelte';
+  import CSSCode from '$lib/components/CSSCode.svelte';
   import AdvertisementPlaceholder from '$lib/components/AdvertisementPlaceholder.svelte';
   import GradientPresets from '$lib/components/GradientPresets.svelte';
   import BlogPosts from '$lib/components/BlogPosts.svelte';
@@ -772,7 +773,14 @@
   
   // Generate the full CSS code block
   function generateFullCssCode(): string {
-    return generateCssCode();
+    // Get the first color stop to use as fallback background color
+    const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+    const firstStop = sortedStops[0];
+    const fallbackColor = firstStop ? hexToRgba(firstStop.color, firstStop.alpha) : 'rgba(255, 95, 109, 1)';
+    
+    // Add fallback background color before the gradient
+    return `background-color: ${fallbackColor};
+${generateCssCode()}`;
   }
   
   // Update CSS variable for gradient border
@@ -977,24 +985,10 @@
     </div>
     
     <!-- CSS Code Display -->
-    <div class="theme-card p-4 rounded-lg gradient-border">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold theme-heading">CSS</h2>
-        <button 
-          type="button"
-          class="theme-button-secondary px-3 py-1 rounded text-sm flex items-center"
-          onclick={copyCssToClipboard}
-        >
-          <span class="mr-1">Copy</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-          </svg>
-        </button>
-      </div>
-      <div class="theme-code font-mono text-sm">
-        <pre class="whitespace-pre-wrap break-all"><code>{generateFullCssCode()}</code></pre>
-      </div>
-    </div>
+    <CSSCode 
+      cssCode={generateFullCssCode()} 
+      onCopy={copyCssToClipboard} 
+    />
   </div>
 </div>
 
