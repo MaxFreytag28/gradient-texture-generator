@@ -29,6 +29,13 @@
 
 <div class="blog-container">
   <header class="blog-header">
+    <a href="/" class="blog-back-link" style="color: var(--color-text-heading); display: flex; align-items: center; margin-bottom: 1.5rem; font-size: 0.95rem;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px; margin-right: 0.5rem;">
+        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+      </svg>
+      Back to Home
+    </a>
+    
     <h1 class="text-3xl md:text-4xl font-bold font-heading tracking-tight letter-spacing--0.02em uppercase mb-4">Blog</h1>
     <p class="text-lg text-color-text-secondary max-w-2xl mx-auto">
       Discover tips, techniques, and inspiration for creating beautiful gradient textures for your projects.
