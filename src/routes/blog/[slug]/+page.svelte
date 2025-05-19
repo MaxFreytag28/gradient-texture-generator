@@ -1,78 +1,98 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, afterUpdate } from 'svelte';
+  import { page } from '$app/stores';
   import type { PageData } from './$types';
   import '$lib/styles/blog.css';
   import BlogPosts from '$lib/components/BlogPosts.svelte';
   
   export let data: PageData;
-  const { post, relatedPosts } = data;
+  
+  // Destructure the data
+  let { post, relatedPosts, slug } = data;
+  
+  // This will run whenever the data prop changes (on navigation)
+  $: if (data) {
+    post = data.post;
+    relatedPosts = data.relatedPosts;
+    slug = data.slug;
+  };
   
   // Format date
   const formatDate = (dateString: string) => {
+    if (!dateString) return '';
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
   
   // Calculate reading time
   const getReadingTime = (content: string): string => {
+    if (!content) return '0 min read';
     const wordsPerMinute = 200;
-    const words = content?.split(/\s+/).length || 0;
+    const words = content.split(/\s+/).length;
     const minutes = Math.ceil(words / wordsPerMinute);
     return `${minutes} min read`;
   };
   
-  // No table of contents needed for short posts
-  
-  onMount(() => {
-    
-    // Get the content container for anchor link handling
-    const content = document.querySelector('.blog-post-content');
-    
-    // Handle anchor links in markdown content
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
-        e.preventDefault();
-        const id = target.getAttribute('href')?.substring(1);
-        if (id) {
-          const element = document.getElementById(id);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }
+  // Handle anchor links in markdown content
+  function handleAnchorClick(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
+      e.preventDefault();
+      const id = target.getAttribute('href')?.substring(1);
+      if (id) {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
         }
       }
-    };
-    
-    // Add click event listener to the content container
+    }
+  }
+  
+  // Set up event listeners after the component mounts or updates
+  function setupEventListeners() {
+    const content = document.querySelector('.blog-post-content');
     if (content) {
       content.addEventListener('click', handleAnchorClick as EventListener);
-      
-      // Cleanup
       return () => {
         content.removeEventListener('click', handleAnchorClick as EventListener);
       };
     }
-  });
+  }
   
-  // No social sharing functions needed
+  // Set up event listeners on mount and after updates
+  onMount(setupEventListeners);
+  afterUpdate(setupEventListeners);
+  
+  // Reset scroll position when the post changes
+  $: if (post?.slug) {
+    // Scroll to top when post changes
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+    }
+  };
 </script>
 
 <svelte:head>
+  <!-- Primary Meta Tags -->
   <title>{post.title} — Gradient Texture Generator</title>
   <meta name="description" content={post.excerpt} />
+  <link rel="canonical" href={`https://makegradients.app/blog/${post.slug}`} />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content={post.title} />
   <meta property="og:description" content={post.excerpt} />
-  <meta property="og:url" content={`/blog/${post.slug}`} />
-  <meta property="og:image" content={`/blog/og-${post.slug}.jpg`} />
+  <meta property="og:url" content={`https://makegradients.app/blog/${post.slug}`} />
+  <meta property="og:image" content={`https://makegradients.app/blog/og-${post.slug}.jpg`} />
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={post.title} />
   <meta name="twitter:description" content={post.excerpt} />
-  <meta name="twitter:image" content={`/blog/og-${post.slug}.jpg`} />
+  <meta name="twitter:image" content={`https://makegradients.app/blog/og-${post.slug}.jpg`} />
+  
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
 <div class="blog-container">

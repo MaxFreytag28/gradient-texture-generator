@@ -2,6 +2,29 @@
   // No need to import app.css as it's already imported in the layout
 </script>
 
+<svelte:head>
+  <!-- Primary Meta Tags -->
+  <title>Privacy Policy - Gradient Texture Generator</title>
+  <meta name="description" content="Learn about our privacy practices and how we handle your data on MakeGradients.app" />
+  <link rel="canonical" href="https://makegradients.app/privacy" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://makegradients.app/privacy" />
+  <meta property="og:title" content="Privacy Policy - Gradient Texture Generator" />
+  <meta property="og:description" content="Learn about our privacy practices and how we handle your data on MakeGradients.app" />
+  <meta property="og:image" content="https://makegradients.app/images/gradient-preview-social.png" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Privacy Policy - Gradient Texture Generator" />
+  <meta name="twitter:description" content="Learn about our privacy practices and how we handle your data on MakeGradients.app" />
+  <meta name="twitter:image" content="https://makegradients.app/images/gradient-preview-social.png" />
+  
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</svelte:head>
+
 <div class="container mx-auto px-4 py-8 max-w-3xl">
   <h1 class="text-3xl font-semibold mb-6 theme-heading">Privacy Policy</h1>
 

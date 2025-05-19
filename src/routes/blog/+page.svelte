@@ -8,8 +8,23 @@
 </script>
 
 <svelte:head>
+  <!-- Primary Meta Tags -->
   <title>Blog — Gradient Texture Generator</title>
   <meta name="description" content="Learn about gradient design, techniques, and inspiration for your projects." />
+  <link rel="canonical" href="https://makegradients.app/blog" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://makegradients.app/blog" />
+  <meta property="og:title" content="Blog — Gradient Texture Generator" />
+  <meta property="og:description" content="Learn about gradient design, techniques, and inspiration for your projects." />
+  <meta property="og:image" content="https://makegradients.app/images/gradient-preview-social.png" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog — Gradient Texture Generator" />
+  <meta name="twitter:description" content="Learn about gradient design, techniques, and inspiration for your projects." />
+  <meta name="twitter:image" content="https://makegradients.app/images/gradient-preview-social.png" />
 </svelte:head>
 
 <div class="blog-container">

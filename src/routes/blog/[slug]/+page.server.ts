@@ -4,8 +4,12 @@ import type { PageServerLoad } from './$types';
 // Import the blog posts data
 import { _blogPostsData } from '../+page.server';
 
+// This ensures the page is always re-rendered on the client when params.slug changes
+export const ssr = true;
+export const csr = true;
+
 // Use a direct approach with hardcoded data to ensure consistency
-export const load: PageServerLoad = async ({ params }) => {
+export const load = (async ({ params }) => {
   const { slug } = params;
   
   // Get the post directly by slug
@@ -18,31 +22,31 @@ export const load: PageServerLoad = async ({ params }) => {
   // Get related posts (all posts except the current one)
   const allPosts = Object.values(_blogPostsData);
   const relatedPosts = allPosts
-    .filter(p => p.slug !== slug) // Show all other posts
+    .filter(p => p.slug !== slug)
+    .map(({ id, title, excerpt, slug, gradient, date }) => ({
+      id,
+      title,
+      excerpt,
+      slug,
+      gradient,
+      date
+    }));
 
-  // Create a clean copy of the post data to avoid reference issues
-  const cleanPost = {
-    id: post.id,
-    title: post.title,
-    excerpt: post.excerpt,
-    slug: post.slug,
-    gradient: post.gradient,
-    content: post.content,
-    date: post.date
-  };
-
-  // Create clean copies of related posts
-  const cleanRelatedPosts = relatedPosts.map(p => ({
-    id: p.id,
-    title: p.title,
-    excerpt: p.excerpt,
-    slug: p.slug,
-    gradient: p.gradient,
-    date: p.date
-  }));
-
+  // Return the data in a way that ensures reactivity
   return {
-    post: cleanPost,
-    relatedPosts: cleanRelatedPosts
+    // Current post data
+    post: {
+      id: post.id,
+      title: post.title,
+      excerpt: post.excerpt,
+      slug: post.slug,
+      gradient: post.gradient,
+      content: post.content,
+      date: post.date
+    },
+    // Related posts (without content to keep payload small)
+    relatedPosts,
+    // Add the slug to the page params to help with client-side navigation
+    slug
   };
-};
+}) satisfies PageServerLoad;

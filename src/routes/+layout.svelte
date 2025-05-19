@@ -3,6 +3,7 @@
 	import '$lib/styles/fonts.css';
 	import '$lib/styles/theme.css';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+	import Footer from '$lib/components/Footer.svelte';
 
 	injectSpeedInsights();
 </script>
@@ -11,6 +12,8 @@
 	<!-- Primary Meta Tags -->
 	<title>MakeGradients.app | Generate & Export Custom Web Gradients</title>
 	<meta name="description" content="Create stunning linear, radial, and conic gradients in your browser. Export them as CSS, SVG, or PNG for your UI, code, or design work.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="canonical" href="https://makegradients.app/" />
 	<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 	
 	<!-- Open Graph / Facebook -->
@@ -40,4 +43,7 @@
 	<main class="flex-grow">
 		<slot></slot>
 	</main>
+	<Footer />
 </div>
+
+
