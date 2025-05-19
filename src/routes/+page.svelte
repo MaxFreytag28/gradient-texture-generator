@@ -857,6 +857,11 @@
   </div>
   
   <div class="flex flex-col lg:flex-row gap-4 mb-4 justify-center">
+    <!-- Gradient Presets Column -->
+    <div class="theme-card p-2 rounded-lg gradient-border w-auto">
+      <GradientPresets on:selectPreset={handlePresetSelect} />
+    </div>
+    
     <!-- Gradient Preview -->
     <div class="theme-card p-4 rounded-lg gradient-border flex-1 flex-col items-center w-auto">
       <div class="w-full aspect-square">
@@ -887,11 +892,6 @@
         />
         <p class="text-sm mt-2 text-center theme-text-muted">Click to add a color stop, drag to move, click on a stop to edit, double-click to remove.</p>
       </div>
-    </div>
-    
-    <!-- Gradient Presets Column -->
-    <div class="theme-card p-2 rounded-lg gradient-border w-auto">
-      <GradientPresets on:selectPreset={handlePresetSelect} />
     </div>
     
     <!-- Controls -->

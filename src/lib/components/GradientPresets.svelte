@@ -14,6 +14,14 @@
     colorStops: ColorStop[];
   }
 
+  // State for collapsed column
+  let isCollapsed = $state(false);
+
+  // Function to toggle collapsed state
+  function toggleCollapsed() {
+    isCollapsed = !isCollapsed;
+  }
+
   // Dispatch events
   const dispatch = createEventDispatcher<{
     selectPreset: GradientPreset;
@@ -183,7 +191,23 @@
   }
 </script>
 
-<div class="gradient-presets-column">
+<div class="gradient-presets-column {isCollapsed ? 'collapsed' : ''}">
+  <!-- Collapse/Expand Arrow Button -->
+  <button 
+    type="button" 
+    class="collapse-toggle theme-button-secondary rounded h-8 w-8 flex items-center justify-center" 
+    onclick={toggleCollapsed} 
+    title={isCollapsed ? 'Expand presets' : 'Collapse presets'}
+  >
+    <svg class="arrow-icon {isCollapsed ? 'collapsed' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="sr-only">{isCollapsed ? 'Expand presets' : 'Collapse presets'}</span>
+  </button>
+  
+  <!-- Vertical Presets Heading (visible when collapsed) -->
+  <h2 class="vertical-presets-heading theme-heading {isCollapsed ? 'visible' : 'hidden'}">Presets</h2>
+  
   <div class="preset-buttons">
     {#each presets as preset}
       <button 
@@ -191,7 +215,7 @@
         class="preset-button theme-card-accent" 
         title={preset.name}
         style="background-image: {generatePreviewGradient(preset)};"
-        on:click={() => selectPreset(preset)}
+        onclick={() => selectPreset(preset)}
       >
         <span class="sr-only">{preset.name}</span>
       </button>
@@ -207,6 +231,69 @@
     padding: 0.5rem;
     gap: 0.5rem;
     position: relative;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    width: 4rem;
+    overflow: hidden;
+  }
+  
+  /* Collapsed state */
+  .gradient-presets-column.collapsed {
+    width: 2rem;
+    min-height: 200px;
+  }
+  
+  .gradient-presets-column.collapsed .preset-buttons {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  /* Toggle button styling */
+  .collapse-toggle {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Arrow icon styling */
+  .arrow-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    opacity: 1;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+  }
+  
+  .arrow-icon.collapsed {
+    transform: rotate(-90deg);
+  }
+  
+  /* Vertical Presets Heading */
+  .vertical-presets-heading {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-align: center;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    position: absolute;
+    top: 10rem; /* Positioned well below the button */
+    transform-origin: top center;
+    height: auto;
+    opacity: 0;
+    visibility: hidden;
+    color: var(--color-text-heading);
+    font-weight: var(--font-weight-heading);
+  }
+  
+  .vertical-presets-heading.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .vertical-presets-heading.hidden {
+    opacity: 0;
+    visibility: hidden;
   }
 
   .preset-buttons {
@@ -214,6 +301,9 @@
     flex-direction: column;
     gap: 0.75rem;
     width: 100%;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 1;
+    visibility: visible;
   }
 
   .preset-button {
