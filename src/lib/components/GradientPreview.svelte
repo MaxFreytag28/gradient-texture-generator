@@ -2,6 +2,20 @@
   import { onMount } from 'svelte';
   import { type ColorStop, type GradientType, type RadialGradientOptions } from '$lib/types';
   
+  // Utility function to convert hex to rgba
+  function hexToRgba(hex: string, alpha: number = 1): string {
+    // Remove # if present
+    hex = hex.replace('#', '');
+    
+    // Parse the hex values
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    // Return rgba string
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  
   // Props using runes
   const props = $props<{
     gradientType: GradientType;
@@ -526,20 +540,6 @@
     updateHandlePosition();
     updateGradientCSS();
   }
-  
-  // Helper function to convert hex to rgba
-  function hexToRgba(hex: string, alpha: number = 1): string {
-    // Remove # if present
-    hex = hex.replace('#', '');
-    
-    // Parse the hex values
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    
-    // Return rgba string
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
 </script>
 
 <div class="relative">
@@ -600,11 +600,23 @@
           top: 50%; 
           width: {lineLength}px; 
           height: 2px; 
-          background-color: rgba(0, 0, 0, 0.3);
+          background-color: transparent;
           transform: rotate({(localAngle + 270) % 360}deg);
           transform-origin: left center;
         "
-      ></div>
+      >
+        <!-- Actual visible line with offset -->
+        <div
+          style="
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: calc(100% - 8px);
+            height: 100%;
+            background-color: var(--color-bg-secondary);
+          "
+        ></div>
+      </div>
     {:else if props.gradientType === 'conic' && showHandles}
       <!-- Line connecting center handle to angle handle -->
       <div 
@@ -614,23 +626,35 @@
           top: {(localCenterY / 100) * 100}%; 
           width: {lineLength}px; 
           height: 2px; 
-          background-color: rgba(0, 0, 0, 0.3);
+          background-color: transparent;
           transform: rotate({(localAngle + 270) % 360}deg);
           transform-origin: left center;
         "
-      ></div>
+      >
+        <!-- Actual visible line with offset -->
+        <div
+          style="
+            position: absolute;
+            left: 8px;
+            top: 0;
+            width: calc(100% - 16px);
+            height: 100%;
+            background-color: var(--color-bg-secondary);
+          "
+        ></div>
+      </div>
     {/if}
     
     <!-- Gradient Handle Overlay -->
     {#if showHandles}
     <div 
       id="gradient-handle"
-      class="absolute w-[20px] h-[20px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
+      class="absolute w-[18px] h-[18px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
       style="
         left: {handleX / displayWidth * 100}%; 
         top: {handleY / displayHeight * 100}%; 
-        border: 2px solid rgba(0, 0, 0, 0.3);
-        background-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 0 2px var(--color-bg-secondary);
+        background-color: transparent;
       "
       tabindex="0"
       role="slider"
@@ -642,19 +666,24 @@
       onmousedown={startDragHandle}
       ontouchstart={startDragHandle}
       ondblclick={resetMainHandle}
-    ></div>
+    >
+      <div 
+        class="absolute inset-0.5 rounded-full"
+        style="box-shadow: 0 0 0 2px var(--color-border-accent); background-color: transparent;"
+      ></div>
+    </div>
     {/if}
     
     <!-- Angle Handle for Conic Gradients -->
     {#if props.gradientType === 'conic' && showHandles}
       <div 
         id="angle-handle"
-        class="absolute w-[20px] h-[20px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
+        class="absolute w-[18px] h-[18px] rounded-full cursor-grab transform -translate-x-1/2 -translate-y-1/2 z-10"
         style="
           left: {angleHandleX / displayWidth * 100}%; 
           top: {angleHandleY / displayHeight * 100}%; 
-          border: 2px solid rgba(0, 0, 0, 0.3);
-          background-color: rgba(255, 255, 255, 0.3);
+          box-shadow: 0 0 0 2px var(--color-bg-secondary);
+          background-color: transparent;
         "
         tabindex="0"
         role="slider"
@@ -665,7 +694,12 @@
         onmousedown={startDragAngleHandle}
         ontouchstart={startDragAngleHandle}
         ondblclick={resetAngleHandle}
-      ></div>
+      >
+        <div 
+          class="absolute inset-0.5 rounded-full"
+          style="box-shadow: 0 0 0 2px var(--color-border-accent); background-color: transparent;"
+        ></div>
+      </div>
     {/if}
   </div>
 </div>
