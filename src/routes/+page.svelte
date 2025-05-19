@@ -5,7 +5,7 @@
   
   // Import components
   import WIPBanner from '$lib/components/WIPBanner.svelte';
-  import Footer from '$lib/components/Footer.svelte';
+
   import FaqSection from '$lib/components/FaqSection.svelte';
   import GradientPreview from '$lib/components/GradientPreview.svelte';
   import ColorStopBar from '$lib/components/ColorStopBar.svelte';
@@ -1003,8 +1003,7 @@
 <!-- FAQ Section for SEO and user information -->
 <FaqSection />
 
-<!-- Footer with SEO text -->
-<Footer />
+
 
 <style>
   :global(.gradient-border) {
