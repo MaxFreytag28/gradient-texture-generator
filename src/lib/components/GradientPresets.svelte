@@ -110,18 +110,7 @@
         { id: 'midnight-2', color: '#2D3436', position: 100, alpha: 1 }
       ]
     },
-    {
-      id: 'soft-light',
-      name: 'Soft Light',
-      gradientType: 'radial',
-      centerX: 50,
-      centerY: 50,
-      radialOptions: { scale: 0.9 },
-      colorStops: [
-        { id: 'soft-1', color: '#E6E6FA', position: 0, alpha: 1 },
-        { id: 'soft-2', color: '#9198e5', position: 100, alpha: 1 }
-      ]
-    },
+
     {
       id: 'pastel-dream',
       name: 'Pastel Dream',
