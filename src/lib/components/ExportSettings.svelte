@@ -74,7 +74,7 @@
     <!-- Column 2: Preset sizes in 3 columns -->
     <div>
       <span class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Preset Sizes</span>
-      <div class="grid grid-cols-3 gap-2" role="group" aria-label="Preset sizes">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" role="group" aria-label="Preset sizes">
         {#each presetSizes as preset}
           <button 
             type="button"
