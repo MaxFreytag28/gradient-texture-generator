@@ -866,7 +866,7 @@ ${generateCssCode()}`;
   
   <div class="flex flex-col lg:flex-row gap-4 mb-4 justify-center">
     <!-- Gradient Presets Column -->
-    <div class="theme-card p-2 rounded-lg gradient-border w-auto">
+    <div class="theme-card p-2 rounded-lg gradient-border w-auto hidden lg:block">
       <GradientPresets on:selectPreset={handlePresetSelect} />
     </div>
     
