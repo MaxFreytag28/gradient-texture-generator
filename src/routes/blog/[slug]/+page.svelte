@@ -83,16 +83,33 @@
   <meta property="og:title" content={post.title} />
   <meta property="og:description" content={post.excerpt} />
   <meta property="og:url" content={`https://makegradients.app/blog/${post.slug}`} />
-  <meta property="og:image" content={`https://makegradients.app/blog/og-${post.slug}.jpg`} />
+
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={post.title} />
   <meta name="twitter:description" content={post.excerpt} />
-  <meta name="twitter:image" content={`https://makegradients.app/blog/og-${post.slug}.jpg`} />
+
   
   <!-- Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Structured Data - BlogPosting Schema -->
+  <script type="application/ld+json">
+  {@html JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://makegradients.app/blog/${post.slug}`
+    }
+  })}
+  </script>
 </svelte:head>
 
 <div class="blog-container">

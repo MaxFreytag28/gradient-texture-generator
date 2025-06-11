@@ -1,16 +1,12 @@
-<script lang="ts">
-  // FAQ section with a single accordion for the entire section
-  
-  // Track if the FAQ section is open or closed
-  let isFaqOpen = $state(false);
-  
-  // Toggle FAQ section open/closed
-  function toggleFaq(): void {
-    isFaqOpen = !isFaqOpen;
-  }
-  
+<script module lang="ts">
+  // Define the type for an FAQ item
+  export type FaqItem = {
+    question: string;
+    answer: string;
+  };
+
   // FAQ data structure
-  const faqItems = [
+  export const faqItems: FaqItem[] = [
     {
       question: "What is makegradients.app used for?",
       answer: "It's a minimalist tool that helps designers, developers, and artists quickly generate gradients. You can export them in multiple formats like CSS, SVG, PNG, JPG, or WebP, fitting almost any digital project."
@@ -32,6 +28,18 @@
       answer: "Not at all. The tool is designed to be intuitive even for complete beginners, helping anyone create visually pleasing gradients effortlessly."
     }
   ];
+</script>
+
+<script lang="ts">
+  // FAQ section with a single accordion for the entire section
+  
+  // Track if the FAQ section is open or closed
+  let isFaqOpen = $state(false);
+  
+  // Toggle FAQ section open/closed
+  function toggleFaq(): void {
+    isFaqOpen = !isFaqOpen;
+  }
 </script>
 
 <section class="w-full py-4 theme-text-muted border-t" style="border-color: var(--color-border-primary);">

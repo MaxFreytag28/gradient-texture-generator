@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 // Define the blog post type
-type BlogPost = {
+export type BlogPost = {
   id: string;
   title: string;
   excerpt: string;
