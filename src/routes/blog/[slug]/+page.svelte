@@ -94,22 +94,43 @@
   <!-- Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- Structured Data - BlogPosting Schema -->
-  <script type="application/ld+json">
-  {@html JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": post.title,
-    "description": post.excerpt,
+  <!-- Structured Data -->
+  {#if data?.post}
+    {@const blogPostSchema = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": data.post.title,
+      "description": data.post.excerpt,
+      "datePublished": data.post.date,
+      "dateModified": data.post.date,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://makegradients.app/blog/${data.post.slug}`
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MakeGradients.app",
+        "logo": {
+          "@type": "ImageObject",
+          "url": `https://makegradients.app/favicon.ico`
+        }
+      },
+      "inLanguage": "en-US",
+      "keywords": [
+        "CSS gradients",
+        "web design",
+        "gradient generator",
+        "web development",
+        ...data.post.title.toLowerCase().split(' ').slice(0, 3)
+      ],
+      "wordCount": data.post.content.split(/\s+/).length
+    }}
 
-    "datePublished": post.date,
-    "dateModified": post.date,
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": `https://makegradients.app/blog/${post.slug}`
-    }
-  })}
-  </script>
+    <!-- BlogPosting structured data -->
+    <script type="application/ld+json">
+      {@html JSON.stringify(blogPostSchema)}
+    </script>
+  {/if}
 </svelte:head>
 
 <div class="blog-container">

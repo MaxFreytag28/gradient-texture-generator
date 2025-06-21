@@ -78,66 +78,68 @@
 	
 	<!-- Structured Data - Website Schema (only on homepage) -->
 	{#if isHomepage}
-	<script type="application/ld+json">
-	{@html JSON.stringify({
-		"@context": "https://schema.org",
-		"@type": "WebSite",
-		"name": "MakeGradients.app",
-		"alternateName": "CSS Gradient Generator",
-		"url": SITE_URL,
-		"description": SITE_DESCRIPTION,
-		"potentialAction": {
-			"@type": "SearchAction",
-			"target": `${SITE_URL}?q={search_term_string}`,
-			"query-input": "required name=search_term_string"
-		},
-		"applicationCategory": "DesignApplication",
-		"offers": {
-			"@type": "Offer",
-			"price": "0",
-			"priceCurrency": "USD"
-		},
-		"keywords": SEO_KEYWORDS.split(", "),
-		"featureList": [
-			"Generate CSS gradients",
-			"Export gradients as PNG",
-			"Export gradients as SVG",
-			"Linear gradient generator",
-			"Radial gradient generator",
-			"Conic gradient generator",
-			"CSS code export",
-			"Color stop editor",
-			"Gradient angle control"
-		]
-	})}
-	</script>
-	
-	<!-- SoftwareApplication structured data for the tool itself -->
-	<script type="application/ld+json">
-	{@html JSON.stringify({
-		"@context": "https://schema.org",
-		"@type": "SoftwareApplication",
-		"name": "MakeGradients.app",
-		"applicationCategory": "DesignApplication",
-		"operatingSystem": "Web",
-		"offers": {
-			"@type": "Offer",
-			"price": "0",
-			"priceCurrency": "USD"
-		},
-		"aggregateRating": {
-			"@type": "AggregateRating",
-			"ratingValue": "4.8",
-			"ratingCount": "156"
-		},
-		"featureList": "Linear, radial, and conic gradient generation with CSS export"
-	})}
-	</script>
+		{@const websiteSchema = {
+			"@context": "https://schema.org",
+			"@type": "WebSite",
+			"name": "MakeGradients.app",
+			"alternateName": "CSS Gradient Generator",
+			"url": SITE_URL,
+			"description": SITE_DESCRIPTION,
+			"potentialAction": {
+				"@type": "SearchAction",
+				"target": `${SITE_URL}?q={search_term_string}`,
+				"query-input": "required name=search_term_string"
+			},
+			"applicationCategory": "DesignApplication",
+			"offers": {
+				"@type": "Offer",
+				"price": "0",
+				"priceCurrency": "USD"
+			},
+			"operatingSystem": "All",
+			"featureList": [
+				"CSS Gradient Generator",
+				"Gradient Preview",
+				"Export as SVG/PNG/WebP",
+				"Copy CSS Code",
+				"Responsive Design"
+			],
+			"softwareVersion": "1.0.0"
+		}}
+		{@const softwareAppSchema = {
+			"@context": "https://schema.org",
+			"@type": "SoftwareApplication",
+			"name": "MakeGradients.app",
+			"applicationCategory": "DesignApplication",
+			"operatingSystem": "All",
+			"offers": {
+				"@type": "Offer",
+				"price": "0",
+				"priceCurrency": "USD"
+			},
+			"featureList": [
+				"CSS Gradient Generator",
+				"Gradient Preview",
+				"Export as SVG/PNG/WebP",
+				"Copy CSS Code",
+				"Responsive Design"
+			],
+			"softwareVersion": "1.0.0"
+		}}
+	{/if}
 
-	<!-- FAQPage structured data -->
-	<script type="application/ld+json">
+	{#if isHomepage}
+		<script type="application/ld+json">
+		{@html JSON.stringify(websiteSchema)}
+		</script>
+
+		<script type="application/ld+json">
+		{@html JSON.stringify(softwareAppSchema)}
+		</script>
+
+		<script type="application/ld+json">
 		{@html JSON.stringify(faqSchema)}
-	</script>
+		</script>
 	{/if}
 </svelte:head>
 
