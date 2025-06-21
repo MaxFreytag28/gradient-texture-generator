@@ -76,7 +76,7 @@
 	<!-- Cal Sans from Google Fonts -->
 	<!-- Cal Sans is already imported in app.html -->
 	
-	<!-- Structured Data - Website Schema (only on homepage) -->
+	<!-- Structured Data - Website & Other Structured Data (only on homepage) -->
 	{#if isHomepage}
 		{@const websiteSchema = {
 			"@context": "https://schema.org",
@@ -126,20 +126,11 @@
 			],
 			"softwareVersion": "1.0.0"
 		}}
-	{/if}
 
-	{#if isHomepage}
-		<script type="application/ld+json">
-		{@html JSON.stringify(websiteSchema)}
-		</script>
-
-		<script type="application/ld+json">
-		{@html JSON.stringify(softwareAppSchema)}
-		</script>
-
-		<script type="application/ld+json">
-		{@html JSON.stringify(faqSchema)}
-		</script>
+		<!-- Inject JSON-LD scripts -->
+		<script type="application/ld+json">{@html JSON.stringify(websiteSchema)}</script>
+		<script type="application/ld+json">{@html JSON.stringify(softwareAppSchema)}</script>
+		<script type="application/ld+json">{@html JSON.stringify(faqSchema)}</script>
 	{/if}
 </svelte:head>
 
