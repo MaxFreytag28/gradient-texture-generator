@@ -96,8 +96,8 @@
   
   <!-- Structured Data -->
   {#if data?.post}
-    <!-- BlogPosting structured data -->
-    <script type="application/ld+json">{JSON.stringify({
+    <!-- Define the schema object separately to handle dynamic values properly -->
+    {@const blogPostSchema = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": data.post.title,
@@ -106,14 +106,14 @@
       "dateModified": data.post.date,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://makegradients.app/blog/${data.post.slug}`
+        "@id": "https://makegradients.app/blog/" + data.post.slug
       },
       "publisher": {
         "@type": "Organization",
         "name": "MakeGradients.app",
         "logo": {
           "@type": "ImageObject",
-          "url": `https://makegradients.app/favicon.ico`
+          "url": "https://makegradients.app/favicon.ico"
         }
       },
       "inLanguage": "en-US",
@@ -125,7 +125,10 @@
         ...data.post.title.toLowerCase().split(' ').slice(0, 3)
       ],
       "wordCount": data.post.content.split(/\s+/).length
-    })}</script>
+    }}
+    
+    <!-- BlogPosting structured data -->
+    <script type="application/ld+json">{JSON.stringify(blogPostSchema)}</script>
   {/if}
 </svelte:head>
 

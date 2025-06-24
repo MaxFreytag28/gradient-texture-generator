@@ -99,6 +99,7 @@
 	
 	<!-- Structured Data - Website & Other Structured Data (only on homepage) -->
 	{#if isHomepage}
+		<!-- Using the same pattern as in the blog page for consistency -->
 		<script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
 		<script type="application/ld+json">{JSON.stringify(softwareAppSchema)}</script>
 		<script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
