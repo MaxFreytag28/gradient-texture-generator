@@ -22,6 +22,27 @@
 	// Determine if current page is homepage
 	const isHomepage = $derived($page.url.pathname === '/');
 
+	// Define structured data schemas
+	const websiteSchema = {
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "MakeGradients.app",
+		"url": SITE_URL,
+		"description": SITE_DESCRIPTION
+	};
+
+	const softwareAppSchema = {
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "MakeGradients.app",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		},
+		"operatingSystem": "All"
+	};
+
 	// Prepare FAQ data for structured data
 	const faqSchema = {
 		'@context': 'https://schema.org',
@@ -78,59 +99,9 @@
 	
 	<!-- Structured Data - Website & Other Structured Data (only on homepage) -->
 	{#if isHomepage}
-		{@const websiteSchema = {
-			"@context": "https://schema.org",
-			"@type": "WebSite",
-			"name": "MakeGradients.app",
-			"alternateName": "CSS Gradient Generator",
-			"url": SITE_URL,
-			"description": SITE_DESCRIPTION,
-			"potentialAction": {
-				"@type": "SearchAction",
-				"target": `${SITE_URL}?q={search_term_string}`,
-				"query-input": "required name=search_term_string"
-			},
-			"applicationCategory": "DesignApplication",
-			"offers": {
-				"@type": "Offer",
-				"price": "0",
-				"priceCurrency": "USD"
-			},
-			"operatingSystem": "All",
-			"featureList": [
-				"CSS Gradient Generator",
-				"Gradient Preview",
-				"Export as SVG/PNG/WebP",
-				"Copy CSS Code",
-				"Responsive Design"
-			],
-			"softwareVersion": "1.0.0"
-		}}
-		{@const softwareAppSchema = {
-			"@context": "https://schema.org",
-			"@type": "SoftwareApplication",
-			"name": "MakeGradients.app",
-			"applicationCategory": "DesignApplication",
-			"operatingSystem": "All",
-			"offers": {
-				"@type": "Offer",
-				"price": "0",
-				"priceCurrency": "USD"
-			},
-			"featureList": [
-				"CSS Gradient Generator",
-				"Gradient Preview",
-				"Export as SVG/PNG/WebP",
-				"Copy CSS Code",
-				"Responsive Design"
-			],
-			"softwareVersion": "1.0.0"
-		}}
-
-		<!-- Inject JSON-LD scripts -->
-		<script type="application/ld+json">{@html JSON.stringify(websiteSchema)}</script>
-		<script type="application/ld+json">{@html JSON.stringify(softwareAppSchema)}</script>
-		<script type="application/ld+json">{@html JSON.stringify(faqSchema)}</script>
+		<script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+		<script type="application/ld+json">{JSON.stringify(softwareAppSchema)}</script>
+		<script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
 	{/if}
 </svelte:head>
 

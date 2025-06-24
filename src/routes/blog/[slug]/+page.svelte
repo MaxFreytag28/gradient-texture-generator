@@ -96,7 +96,8 @@
   
   <!-- Structured Data -->
   {#if data?.post}
-    {@const blogPostSchema = {
+    <!-- BlogPosting structured data -->
+    <script type="application/ld+json">{JSON.stringify({
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": data.post.title,
@@ -124,12 +125,7 @@
         ...data.post.title.toLowerCase().split(' ').slice(0, 3)
       ],
       "wordCount": data.post.content.split(/\s+/).length
-    }}
-
-    <!-- BlogPosting structured data -->
-    <script type="application/ld+json">
-      {@html JSON.stringify(blogPostSchema)}
-    </script>
+    })}</script>
   {/if}
 </svelte:head>
 
