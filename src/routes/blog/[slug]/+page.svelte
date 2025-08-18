@@ -126,7 +126,7 @@
     }}
     
     <!-- BlogPosting structured data -->
-    <script type="application/ld+json">{JSON.stringify(blogPostSchema)}</script>
+    {@html `<script type="application/ld+json">${JSON.stringify(blogPostSchema)}</script>`}
   {/if}
 </svelte:head>
 
