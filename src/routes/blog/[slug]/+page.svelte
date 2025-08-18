@@ -4,6 +4,7 @@
   import type { PageData } from './$types';
   import '$lib/styles/blog.css';
   import BlogPosts from '$lib/components/BlogPosts.svelte';
+  import { SITE_URL } from '$lib/config';
   
   export let data: PageData;
   
@@ -76,13 +77,12 @@
   <!-- Primary Meta Tags -->
   <title>{post.title} — Gradient Texture Generator</title>
   <meta name="description" content={post.excerpt} />
-  <link rel="canonical" href={`https://makegradients.app/blog/${post.slug}`} />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content={post.title} />
   <meta property="og:description" content={post.excerpt} />
-  <meta property="og:url" content={`https://makegradients.app/blog/${post.slug}`} />
+  <meta property="og:url" content={`${SITE_URL}/blog/${post.slug}`} />
 
   
   <!-- Twitter -->
@@ -91,8 +91,6 @@
   <meta name="twitter:description" content={post.excerpt} />
 
   
-  <!-- Viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <!-- Structured Data -->
   {#if data?.post}
@@ -106,14 +104,14 @@
       "dateModified": data.post.date,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://makegradients.app/blog/" + data.post.slug
+        "@id": SITE_URL + "/blog/" + data.post.slug
       },
       "publisher": {
         "@type": "Organization",
         "name": "MakeGradients.app",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://makegradients.app/favicon.ico"
+          "url": SITE_URL + "/favicon.png"
         }
       },
       "inLanguage": "en-US",

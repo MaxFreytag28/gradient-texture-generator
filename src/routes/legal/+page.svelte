@@ -6,7 +6,6 @@
   <!-- Primary Meta Tags -->
   <title>Legal Disclosure - Gradient Texture Generator</title>
   <meta name="description" content="Legal information and disclosure for MakeGradients.app" />
-  <link rel="canonical" href="https://makegradients.app/legal" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
@@ -21,8 +20,6 @@
   <meta name="twitter:description" content="Legal information and disclosure for MakeGradients.app" />
   <meta name="twitter:image" content="https://makegradients.app/images/gradient-preview-social.png" />
   
-  <!-- Viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
 <div class="container mx-auto px-4 py-8 max-w-3xl">

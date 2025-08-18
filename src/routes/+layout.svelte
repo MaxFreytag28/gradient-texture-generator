@@ -61,8 +61,9 @@
 <svelte:head>
 	<!-- Primary Meta Tags -->
 	<title>{SITE_TITLE}</title>
-	<meta name="description" content={SITE_DESCRIPTION}>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{#if isHomepage}
+		<meta name="description" content={SITE_DESCRIPTION}>
+	{/if}
 	<meta name="keywords" content={SEO_KEYWORDS}>
 	<meta name="author" content={SITE_AUTHOR}>
 	<meta name="language" content={SITE_LANGUAGE}>
@@ -70,7 +71,7 @@
 	<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 	<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 	<link rel="canonical" href={getCanonicalUrl()} />
-	<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 	
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">

@@ -30,7 +30,7 @@ export function GET() {
           (post: BlogPost) => `
         <url>
           <loc>${SITE_URL}/blog/${post.slug}</loc>
-          <lastmod>${post.date}</lastmod>
+          <lastmod>${new Date(post.date).toISOString().slice(0, 10)}</lastmod>
         </url>
       `
         )
