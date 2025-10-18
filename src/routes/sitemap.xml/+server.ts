@@ -1,14 +1,16 @@
-import { _blogPostsData, type BlogPost } from '../blog/+page.server';
+import { allBlogPosts, type BlogPost } from '$lib/blog-content';
 import { SITE_URL } from '$lib/config';
 
 export function GET() {
-  const posts = Object.values(_blogPostsData);
+  const posts = Object.values(allBlogPosts);
 
   const staticPages = [
-    { path: '/', lastmod: '2025-05-19' },
-    { path: '/blog', lastmod: '2025-05-19' },
-    { path: '/privacy', lastmod: '2025-05-13' },
-    { path: '/legal', lastmod: '2025-05-13' }
+    { path: '/', lastmod: '2025-05-19', changefreq: 'weekly', priority: '1.0' },
+    { path: '/gradient-maker', lastmod: '2025-05-19', changefreq: 'weekly', priority: '0.9' },
+    { path: '/gradient-app', lastmod: '2025-05-19', changefreq: 'weekly', priority: '0.9' },
+    { path: '/blog', lastmod: '2025-05-19', changefreq: 'weekly', priority: '0.8' },
+    { path: '/privacy', lastmod: '2025-05-13', changefreq: 'yearly', priority: '0.3' },
+    { path: '/legal', lastmod: '2025-05-13', changefreq: 'yearly', priority: '0.3' }
   ];
 
   const headers = { 'Content-Type': 'application/xml' };
@@ -21,6 +23,8 @@ export function GET() {
         <url>
           <loc>${SITE_URL}${page.path}</loc>
           <lastmod>${page.lastmod}</lastmod>
+          <changefreq>${page.changefreq}</changefreq>
+          <priority>${page.priority}</priority>
         </url>
       `
         )
@@ -31,6 +35,8 @@ export function GET() {
         <url>
           <loc>${SITE_URL}/blog/${post.slug}</loc>
           <lastmod>${new Date(post.date).toISOString().slice(0, 10)}</lastmod>
+          <changefreq>monthly</changefreq>
+          <priority>0.7</priority>
         </url>
       `
         )

@@ -1,8 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-
-// Import the blog posts data
-import { _blogPostsData } from '../+page.server';
+import { allBlogPosts, type BlogPost } from '$lib/blog-content';
 
 // This ensures the page is always re-rendered on the client when params.slug changes
 export const ssr = true;
@@ -13,23 +11,22 @@ export const load = (async ({ params }) => {
   const { slug } = params;
   
   // Get the post directly by slug
-  const post = _blogPostsData[slug];
+  const post = allBlogPosts[slug];
   
   if (!post) {
-    throw error(404, `Post not found: ${slug}`);
+    throw error(404, 'Blog post not found');
   }
 
   // Get related posts (all posts except the current one)
-  const allPosts = Object.values(_blogPostsData);
-  const relatedPosts = allPosts
-    .filter(p => p.slug !== slug)
-    .map(({ id, title, excerpt, slug, gradient, date }) => ({
-      id,
-      title,
-      excerpt,
-      slug,
-      gradient,
-      date
+  const relatedPosts = Object.values(allBlogPosts)
+    .filter((p: BlogPost) => p.slug !== slug)
+    .map((p: BlogPost) => ({
+      id: p.id,
+      title: p.title,
+      excerpt: p.excerpt,
+      slug: p.slug,
+      gradient: p.gradient,
+      date: p.date
     }));
 
   // Return the data in a way that ensures reactivity

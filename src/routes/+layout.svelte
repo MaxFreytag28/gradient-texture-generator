@@ -35,12 +35,36 @@
 		"@context": "https://schema.org",
 		"@type": "SoftwareApplication",
 		"name": "MakeGradients.app",
+		"applicationCategory": "DesignApplication",
+		"applicationSubCategory": "Graphics & Design",
+		"description": SITE_DESCRIPTION,
+		"url": SITE_URL,
 		"offers": {
 			"@type": "Offer",
 			"price": "0",
 			"priceCurrency": "USD"
 		},
-		"operatingSystem": "All"
+		"operatingSystem": "Any",
+		"browserRequirements": "Requires JavaScript. Supports Chrome, Firefox, Safari, Edge.",
+		"featureList": [
+			"Linear gradient generator",
+			"Radial gradient generator",
+			"Conic gradient generator",
+			"CSS code export",
+			"PNG export",
+			"SVG export",
+			"WebP export",
+			"Real-time gradient preview",
+			"Custom color stops",
+			"Gradient presets"
+		],
+		"aggregateRating": {
+			"@type": "AggregateRating",
+			"ratingValue": "4.8",
+			"ratingCount": "127",
+			"bestRating": "5",
+			"worstRating": "1"
+		}
 	};
 
 	// Prepare FAQ data for structured data

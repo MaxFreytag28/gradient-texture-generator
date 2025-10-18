@@ -23,22 +23,29 @@
   // Get the current slug to avoid linking to the current page
   $: currentSlug = $page?.params?.slug;
   
-  // Reference to the scroll container
-  let scrollContainer: HTMLElement;
+  // Reference to the scroll container and wrapper
+  let scrollContainer: HTMLElement | undefined;
+  let wrapperContainer: HTMLElement | undefined;
   
   // Check if content overflows and needs scrolling
   onMount(() => {
-    if (scrollContainer && scrollContainer.parentNode) {
+    if (!scrollContainer || !wrapperContainer) return;
+    
+    // Create local references to avoid TypeScript undefined errors
+    const container = scrollContainer;
+    const wrapper = wrapperContainer;
+    
+    {
       // Get fade elements
       const leftFade = document.createElement('div');
       const rightFade = document.createElement('div');
       leftFade.className = 'left-fade';
       rightFade.className = 'right-fade';
-      scrollContainer.parentNode.appendChild(leftFade);
-      scrollContainer.parentNode.appendChild(rightFade);
+      wrapper.appendChild(leftFade);
+      wrapper.appendChild(rightFade);
       
       const checkOverflow = () => {
-        const hasOverflow = scrollContainer.scrollWidth > scrollContainer.clientWidth;
+        const hasOverflow = container.scrollWidth > container.clientWidth;
         leftFade.style.display = hasOverflow ? 'block' : 'none';
         rightFade.style.display = hasOverflow ? 'block' : 'none';
         
@@ -49,8 +56,8 @@
       
       const updateGradients = () => {
         // Calculate scroll percentages
-        const totalScrollWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-        const scrollPercentage = totalScrollWidth > 0 ? scrollContainer.scrollLeft / totalScrollWidth : 0;
+        const totalScrollWidth = container.scrollWidth - container.clientWidth;
+        const scrollPercentage = totalScrollWidth > 0 ? container.scrollLeft / totalScrollWidth : 0;
         
         // Update left fade size based on scroll position
         const leftFadeWidth = Math.min(2.5, scrollPercentage * 2.5);
@@ -64,7 +71,7 @@
       };
       
       // Add scroll event listener
-      scrollContainer.addEventListener('scroll', updateGradients);
+      container.addEventListener('scroll', updateGradients);
       
       // Check on mount and when window resizes
       checkOverflow();
@@ -72,7 +79,7 @@
       
       return () => {
         window.removeEventListener('resize', checkOverflow);
-        scrollContainer.removeEventListener('scroll', updateGradients);
+        container.removeEventListener('scroll', updateGradients);
         if (leftFade.parentNode) leftFade.parentNode.removeChild(leftFade);
         if (rightFade.parentNode) rightFade.parentNode.removeChild(rightFade);
       };
@@ -100,52 +107,12 @@
     </div>
     {/if}
     
-    <div class="relative overflow-hidden px-4">
+    <div class="relative overflow-hidden px-4" bind:this={wrapperContainer}>
       <div 
         class="flex gap-6 pb-6 overflow-x-auto -mx-4 px-4 snap-x snap-mandatory blog-posts-scroll" 
         bind:this={scrollContainer}
         style="scrollbar-color: var(--color-accent-primary) transparent; scrollbar-width: thin;"
       >
-        <style>
-          .blog-posts-scroll::-webkit-scrollbar {
-            height: 4px;
-            background-color: transparent;
-          }
-          .blog-posts-scroll::-webkit-scrollbar-thumb {
-            background-color: var(--color-accent-primary);
-            border-radius: 4px;
-          }
-          .snap-x {
-            scroll-snap-type: x mandatory;
-          }
-          .snap-mandatory > * {
-            scroll-snap-align: start;
-          }
-          /* Fade elements */
-          .left-fade, .right-fade {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 0;
-            background-color: var(--color-bg-primary);
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0;
-            transition: width 0.05s ease-out;
-          }
-          
-          .left-fade {
-            left: 0;
-            mask-image: linear-gradient(to right, var(--color-bg-primary), transparent);
-            -webkit-mask-image: linear-gradient(to right, var(--color-bg-primary), transparent);
-          }
-          
-          .right-fade {
-            right: 0;
-            mask-image: linear-gradient(to left, var(--color-bg-primary), transparent);
-            -webkit-mask-image: linear-gradient(to left, var(--color-bg-primary), transparent);
-          }
-        </style>
         {#each posts.filter(post => post.slug !== currentSlug) as post}
           <!-- Using standard anchor tag for better SEO and accessibility -->
           <!-- SvelteKit will handle the client-side navigation automatically -->
@@ -178,22 +145,68 @@
         {/each}
       </div>
       
-      <!-- Custom scrollbar styling -->
-      <style>
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .line-clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      </style>
     </div>
   </div>
 </div>
+
+<style>
+  /* Scrollbar styling */
+  :global(.blog-posts-scroll::-webkit-scrollbar) {
+    height: 4px;
+    background-color: transparent;
+  }
+  :global(.blog-posts-scroll::-webkit-scrollbar-thumb) {
+    background-color: var(--color-accent-primary);
+    border-radius: 4px;
+  }
+  
+  /* Snap scrolling */
+  :global(.snap-x) {
+    scroll-snap-type: x mandatory;
+  }
+  :global(.snap-mandatory > *) {
+    scroll-snap-align: start;
+  }
+  
+  /* Fade elements */
+  :global(.left-fade),
+  :global(.right-fade) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background-color: var(--color-bg-primary);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: width 0.05s ease-out;
+  }
+  
+  :global(.left-fade) {
+    left: 0;
+    mask-image: linear-gradient(to right, var(--color-bg-primary), transparent);
+    -webkit-mask-image: linear-gradient(to right, var(--color-bg-primary), transparent);
+  }
+  
+  :global(.right-fade) {
+    right: 0;
+    mask-image: linear-gradient(to left, var(--color-bg-primary), transparent);
+    -webkit-mask-image: linear-gradient(to left, var(--color-bg-primary), transparent);
+  }
+  
+  /* Utility classes */
+  :global(.scrollbar-hide::-webkit-scrollbar) {
+    display: none;
+  }
+  :global(.scrollbar-hide) {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  :global(.line-clamp-3) {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

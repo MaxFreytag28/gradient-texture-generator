@@ -125,8 +125,35 @@
       "wordCount": data.post.content.split(/\s+/).length
     }}
     
+    {@const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": SITE_URL
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": SITE_URL + "/blog"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": data.post.title,
+          "item": SITE_URL + "/blog/" + data.post.slug
+        }
+      ]
+    }}
+    
     <!-- BlogPosting structured data -->
     {@html `<script type="application/ld+json">${JSON.stringify(blogPostSchema)}</script>`}
+    <!-- Breadcrumb structured data -->
+    {@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
   {/if}
 </svelte:head>
 
@@ -134,12 +161,13 @@
   <article class="blog-post">
     <!-- Post Header -->
     <header class="blog-post-header">
-      <a href="/" class="blog-back-link" style="color: var(--color-text-heading);">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-        Back to Home
-      </a>
+      <nav class="breadcrumb" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--color-text-muted);">
+        <a href="/" style="color: var(--color-text-muted); text-decoration: none; transition: color 0.2s;">Home</a>
+        <span style="color: var(--color-text-muted);">/</span>
+        <a href="/blog" style="color: var(--color-text-muted); text-decoration: none; transition: color 0.2s;">Blog</a>
+        <span style="color: var(--color-text-muted);">/</span>
+        <span style="color: var(--color-text-primary);">{post.title.length > 40 ? post.title.substring(0, 40) + '...' : post.title}</span>
+      </nav>
       
       <h1 class="blog-post-title">{post.title}</h1>
       

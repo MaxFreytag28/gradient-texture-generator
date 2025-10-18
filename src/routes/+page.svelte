@@ -859,9 +859,12 @@ ${generateCssCode()}`;
 
 <!-- Main layout with side heading -->
 <div class="relative container mx-auto px-4 py-8 max-w-6xl">
+  <!-- Hidden H1 for SEO -->
+  <h1 class="sr-only">Free Gradient Maker - Create Beautiful CSS Gradients Online</h1>
+  
   <!-- Side heading (vertical text) -->
   <div class="absolute left-0 top-0 bottom-0 flex items-start">
-    <h1 class="vertical-text text-5xl theme-heading whitespace-nowrap">MAKE GRADIENTS</h1>
+    <div class="vertical-text text-5xl theme-heading whitespace-nowrap" aria-hidden="true">MAKE GRADIENTS</div>
   </div>
   
   <div class="flex flex-col lg:flex-row gap-4 mb-4 justify-center">
@@ -1008,15 +1011,27 @@ ${generateCssCode()}`;
     /* background-image: linear-gradient(to bottom, var(--color-bg-secondary), var(--color-bg-secondary)), var(--current-gradient); */
   }
   
+  /* Screen reader only class for SEO H1 */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
   /* Vertical text for side heading */
   .vertical-text {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     position: absolute;
-    left: -50px; /* Position outside the main content area */
-    top: 42px; /* Increased top spacing for better visual weight */
-    color: var(--color-text-heading);
-    font-weight: var(--font-weight-heading);
-    word-spacing: 0.5em;
+    left: -50px;
+    top: 40px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
   }
 </style>

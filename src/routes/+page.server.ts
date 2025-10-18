@@ -1,9 +1,9 @@
 import type { PageServerLoad } from './$types';
-import { _blogPostsData } from './blog/+page.server';
+import { allBlogPosts } from '$lib/blog-content';
 
 export const load: PageServerLoad = async () => {
   // Get the blog posts data for the homepage
-  const allPosts = Object.values(_blogPostsData).sort((a, b) => 
+  const allPosts = Object.values(allBlogPosts).sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   

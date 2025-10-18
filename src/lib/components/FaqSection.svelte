@@ -12,6 +12,22 @@
       answer: "It's a minimalist tool that helps designers, developers, and artists quickly generate gradients. You can export them in multiple formats like CSS, SVG, PNG, JPG, or WebP, fitting almost any digital project."
     },
     {
+      question: "Is this gradient maker free to use?",
+      answer: "Yes, this gradient maker is completely free with no signup required. Create unlimited gradients and export them in any format without restrictions."
+    },
+    {
+      question: "How do I create gradients with this tool?",
+      answer: "Creating gradients is simple: choose your gradient type (linear, radial, or conic), click the color bar to add color stops, adjust colors and positions, then export. The gradient preview updates in real-time as you make changes."
+    },
+    {
+      question: "What's the difference between a gradient app and CSS gradients?",
+      answer: "A gradient app like makegradients.app generates CSS gradient code for you visually. Instead of writing CSS gradient syntax manually, you design it visually and get the code automatically. You can also export as images for use outside of web projects."
+    },
+    {
+      question: "Can I export PNG gradients for use in other applications?",
+      answer: "Yes! You can export your gradients as PNG, JPG, WebP, or SVG files in any resolution. This makes them perfect for graphic design, 3D textures, game development, and print projects."
+    },
+    {
       question: "Can gradients from makegradients.app be used commercially?",
       answer: "Absolutely! All gradients you create can be freely used in personal or commercial projects with no restrictions or attributions needed."
     },
@@ -20,12 +36,24 @@
       answer: "You can fully adjust colors, angles, and gradient types to precisely match your project's style. The intuitive interface lets you quickly experiment and export the perfect gradient."
     },
     {
+      question: "What gradient types can I create with this gradient tool?",
+      answer: "You can create linear gradients (straight color transitions), radial gradients (circular color transitions), and conic gradients (angular color transitions). Each type offers full control over colors, positions, angles, and opacity."
+    },
+    {
       question: "Is makegradients.app optimized for mobile devices?",
       answer: "Currently, it's best used on desktop browsers, though basic functionality does work on tablets. Improved mobile compatibility is planned, but for now, desktops offer the smoothest experience."
     },
     {
       question: "Do I need design skills to use makegradients.app effectively?",
       answer: "Not at all. The tool is designed to be intuitive even for complete beginners, helping anyone create visually pleasing gradients effortlessly."
+    },
+    {
+      question: "Can I convert PNG to SVG with gradient?",
+      answer: "While this tool creates gradients from scratch rather than converting existing images, you can recreate any gradient visually and export it as SVG. For true PNG to SVG conversion, you'd need specialized tracing software."
+    },
+    {
+      question: "How do I make gradient backgrounds for websites?",
+      answer: "Create your gradient in the tool, then copy the CSS code provided. Paste this code into your website's CSS file using the 'background' property. The gradient will work perfectly across all modern browsers."
     }
   ];
 </script>
