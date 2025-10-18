@@ -35,12 +35,11 @@
 	const softwareAppSchema = {
 		"@context": "https://schema.org",
 		"@type": "SoftwareApplication",
-		"name": "MakeGradients.app",
+		"name": "MakeGradients",
 		"applicationCategory": "DesignApplication",
 		"applicationSubCategory": "Graphics & Design",
 		"description": SITE_DESCRIPTION,
 		"url": SITE_URL,
-		"name": "MakeGradients",
 		"offers": {
 			"@type": "Offer",
 			"price": "0",
@@ -105,13 +104,14 @@
 	<meta property="og:url" content={getCanonicalUrl()}>
 	<meta property="og:title" content={SITE_TITLE}>
 	<meta property="og:description" content={SITE_DESCRIPTION}>
-
+	<meta property="og:image" content="{SITE_URL}/images/gradient-preview-social.png">
 	<meta property="og:site_name" content="MakeGradients" />
 	<meta property="og:locale" content="en_US">
 	
 	<!-- Twitter -->
 	<meta property="twitter:card" content="summary_large_image">
 	<meta property="twitter:url" content={getCanonicalUrl()}>
+	<meta property="twitter:image" content="{SITE_URL}/images/gradient-preview-social.png">
 	<meta property="twitter:title" content={SITE_TITLE}>
 	<meta property="twitter:description" content={SITE_DESCRIPTION}>
 
