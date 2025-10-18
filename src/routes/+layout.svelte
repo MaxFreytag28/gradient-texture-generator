@@ -26,7 +26,8 @@
 	const websiteSchema = {
 		"@context": "https://schema.org",
 		"@type": "WebSite",
-		"name": "MakeGradients.app",
+		"name": "MakeGradients",
+		"alternateName": ["MakeGradients.app", "Make Gradients"],
 		"url": SITE_URL,
 		"description": SITE_DESCRIPTION
 	};
@@ -39,6 +40,7 @@
 		"applicationSubCategory": "Graphics & Design",
 		"description": SITE_DESCRIPTION,
 		"url": SITE_URL,
+		"name": "MakeGradients",
 		"offers": {
 			"@type": "Offer",
 			"price": "0",
@@ -95,7 +97,8 @@
 	<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 	<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 	<link rel="canonical" href={getCanonicalUrl()} />
-	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+	<link rel="apple-touch-icon" href="/search-icon.png">
 	
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">
@@ -103,7 +106,7 @@
 	<meta property="og:title" content={SITE_TITLE}>
 	<meta property="og:description" content={SITE_DESCRIPTION}>
 
-	<meta property="og:site_name" content="MakeGradients.app">
+	<meta property="og:site_name" content="MakeGradients" />
 	<meta property="og:locale" content="en_US">
 	
 	<!-- Twitter -->
